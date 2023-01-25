@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "912309443762",
+    "project_id": "goss-p-dc95b",
+    "storage_bucket": "goss-p-dc95b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912309443762:android:045d79cec228da85583dab",
+        "android_client_info": {
+          "package_name": "com.example.gossip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "912309443762-gm3nimm3tdni4miisjjj6ta48tsehkk4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gossip",
+            "certificate_hash": "ead15c376976933ea32959a2e634f733bf488590"
+          }
+        },
+        {
+          "client_id": "912309443762-pe5oqau67hq9vlv6mc24idjh4ot5j7t9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDStCh2RTMUFnesZbdAFlRgInaQa5PzI8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "912309443762-pe5oqau67hq9vlv6mc24idjh4ot5j7t9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

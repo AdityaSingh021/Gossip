@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/test_8"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="129dp"
+            android:fontFamily="@font/believe_it"
+            android:gravity="center"
+            android:text="Gossip"
+            android:textColor="@color/white"
+            android:textSize="70dp"
+            android:textStyle="bold"></TextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="400dp"
+            android:gravity="bottom">
+
+            <!--Edittext for getting users phone number-->
+
+            <!--Button for getting OTP-->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="#302F2E41"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="40dp">
+
+                        <EditText
+                            android:id="@+id/name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/transparent_rect"
+                            android:hint="User Name"
+                            android:importantForAutofill="no"
+                            android:inputType="textPersonName"
+                            android:padding="10dp"
+                            android:paddingStart="55dp"
+                            android:paddingBottom="10dp"
+                            android:textColor="#CDF1FB"
+                            android:textColorHint="#CDF1FB"></EditText>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_marginVertical="11dp"
+                                android:layout_marginStart="5dp"
+                                android:src="@drawable/ic_baseline_person_24"></ImageView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="2dp"
+                                android:layout_marginVertical="4dp"
+                                android:text="|"
+                                android:textColor="#CDF1FB"
+                                android:textSize="25dp"></TextView>
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="40dp">
+
+
+                        <EditText
+                            android:id="@+id/idEdtPhoneNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/transparent_rect"
+                            android:hint="Phone Number"
+                            android:importantForAutofill="no"
+                            android:inputType="phone"
+                            android:maxLength="10"
+                            android:maxLines="10"
+                            android:padding="10dp"
+                            android:paddingStart="55dp"
+                            android:paddingBottom="50dp"
+                            android:textColor="#CDF1FB"
+                            android:textColorHint="#CDF1FB" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginVertical="10dp"
+                                android:src="@drawable/ic_baseline_phone_iphone_24"></ImageView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="2dp"
+                                android:layout_marginVertical="5dp"
+                                android:text="|"
+                                android:textColor="#CDF1FB"
+                                android:textSize="25dp"></TextView>
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+                    <!--Edittext for getting otp from user-->
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/idEdtOtp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="80dp"
+                            android:layout_marginTop="30dp"
+                            android:layout_marginEnd="80dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/transparent_rect"
+                            android:gravity="center"
+                            android:hint="OTP"
+                            android:importantForAutofill="no"
+                            android:inputType="phone"
+                            android:maxLength="6"
+                            android:maxLines="6"
+                            android:padding="10dp"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black" />
+
+                        <TextView
+                            android:id="@+id/idBtnGetOtp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="80dp"
+                            android:layout_marginTop="30dp"
+                            android:layout_marginEnd="80dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/get_otp_button"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:text="OTP"
+                            android:textColorHint="#CDF1FB"
+                            android:textAllCaps="false"
+                            android:textColor="#CDF1FB" />
+
+
+                    </RelativeLayout>
+
+
+                    <!--button for verifying user OTP-->
+                    <TextView
+
+                        android:id="@+id/idBtnVerify"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="80dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="80dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/get_otp_button"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="Verify OTP"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
+
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+
+
+</RelativeLayout>
