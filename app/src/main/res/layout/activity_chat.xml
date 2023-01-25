@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".chat.Chat">
 
 
-
     <RelativeLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,9 +17,9 @@
         <ImageView
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:background="@drawable/ic_baseline_supervised_user_circle_24"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"></ImageView>
+            android:layout_marginTop="20dp"
+            android:background="@drawable/ic_baseline_supervised_user_circle_24"></ImageView>
 
 
         <TextView
@@ -31,28 +32,38 @@
             android:text="User Name"
             android:textColor="@color/black"
             android:textSize="18dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
 
-    <RelativeLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chattingRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomBar"
+        android:layout_below="@+id/topBar" />
+
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:orientation="horizontal"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
 
 
         <EditText
             android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="10dp"
             android:backgroundTint="#80808080"
             android:hint="Type something..."
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
         <Button
@@ -60,12 +71,11 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
+            android:layout_gravity="end"
             android:layout_marginEnd="10dp"
             android:background="@drawable/ic_baseline_send_24" />
 
 
-
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

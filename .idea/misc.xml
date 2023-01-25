@@ -16,14 +16,18 @@
         <entry key="..\:/Gossip/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1535" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/login_backg.xml" value="0.1535" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/message_notification.xml" value="0.1745" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/recieve_msg.xml" value="0.2385" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/send_msg.xml" value="0.2385" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/trans_rect_light_blue_grad.xml" value="0.1535" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/trans_rect_new.xml" value="0.121" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/transparent_rect.xml" value="0.1535" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/activity_add_contact.xml" value="0.14635416666666667" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_chat.xml" value="0.234375" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_home.xml" value="0.213768115942029" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_main.xml" value="0.2427536231884058" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_splash_screen.xml" value="0.2427536231884058" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/chat_adapter_layout.xml" value="0.30364583333333334" />
         <entry key="..\:/Gossip/app/src/main/res/layout/messages_adapter_layout.xml" value="0.2427536231884058" />
       </map>
     </option>
