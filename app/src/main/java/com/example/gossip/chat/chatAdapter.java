@@ -1,6 +1,7 @@
 package com.example.gossip.chat;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +38,11 @@ public class chatAdapter extends RecyclerView.Adapter<chatAdapter.MyViewHolder> 
 
 
         chatList list2=chatLists.get(position);
+        Log.i("myPhoneis",list2.getMobile());
 
         if(list2.getMobile().equals(userMobile)){
             holder.myLayout.setVisibility(View.VISIBLE);
             holder.oppoLayout.setVisibility(View.GONE);
-
             holder.myMessage.setText(list2.getMessage());
             holder.myTime.setText(list2.getDate()+"  "+list2.getTime());
         }else{
@@ -52,7 +53,6 @@ public class chatAdapter extends RecyclerView.Adapter<chatAdapter.MyViewHolder> 
         }
 
     }
-
     @Override
     public int getItemCount() {
         return chatLists.size();

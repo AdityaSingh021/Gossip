@@ -7,28 +7,56 @@
         <entry key="..\:/Gossip/app/src/main/res/drawable/back_g2.xml" value="0.163" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/backg_2.xml" value="0.163" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/background_test.xml" value="0.163" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/black_circle.xml" value="0.2135" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/black_rect.xml" value="0.2135" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/bottom_nav_grey.xml" value="0.2545" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/bottom_nav_square.xml" value="0.1265" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/bottom_navigation_selector.xml" value="0.2545" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/bottom_nax_circle.xml" value="0.2135" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/circle_1.xml" value="0.125" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/circle_dark_blue.xml" value="0.1535" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/dark_blue_circle.xml" value="0.1535" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/get_otp_button.xml" value="0.163" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/gradient_rect.xml" value="0.12" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/grey_circle.xml" value="0.171" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/grey_rect.xml" value="0.205" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.141" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/ic_baseline_dots_24.xml" value="0.141" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.2135" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.1745" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/ic_baseline_phone_iphone_24.xml" value="0.1745" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.141" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.141" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.2135" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1535" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/left_bottom_nav_black.xml" value="0.2135" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/login_backg.xml" value="0.1535" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/message_notification.xml" value="0.1745" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/off_white_circle.xml" value="0.1" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/recieve_msg.xml" value="0.2385" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/right_bottom_nav_black.xml" value="0.2135" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/semi_circle.xml" value="0.1725" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/send_msg.xml" value="0.2385" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/trans_rect_light_blue_grad.xml" value="0.1535" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/trans_rect_new.xml" value="0.121" />
         <entry key="..\:/Gossip/app/src/main/res/drawable/transparent_rect.xml" value="0.1535" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/white_circle.xml" value="0.1265" />
+        <entry key="..\:/Gossip/app/src/main/res/drawable/yellow_rect.xml" value="0.2135" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_add_contact.xml" value="0.14635416666666667" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/activity_bottom_navigation_page.xml" value="0.2" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_chat.xml" value="0.234375" />
-        <entry key="..\:/Gossip/app/src/main/res/layout/activity_home.xml" value="0.213768115942029" />
-        <entry key="..\:/Gossip/app/src/main/res/layout/activity_login.xml" value="0.264" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/activity_home.xml" value="0.16017316017316016" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/activity_login.xml" value="0.15384615384615385" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_main.xml" value="0.2427536231884058" />
         <entry key="..\:/Gossip/app/src/main/res/layout/activity_splash_screen.xml" value="0.2427536231884058" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/bottom_navigation.xml" value="0.19479166666666667" />
         <entry key="..\:/Gossip/app/src/main/res/layout/chat_adapter_layout.xml" value="0.30364583333333334" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/fragment_blank.xml" value="0.19479166666666667" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/fragment_home.xml" value="0.19479166666666667" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/fragment_random_chat.xml" value="0.19479166666666667" />
         <entry key="..\:/Gossip/app/src/main/res/layout/messages_adapter_layout.xml" value="0.2427536231884058" />
+        <entry key="..\:/Gossip/app/src/main/res/layout/temp.xml" value="0.24895833333333334" />
+        <entry key="..\:/Gossip/app/src/main/res/menu/bottom_nav_menu.xml" value="0.10885416666666667" />
       </map>
     </option>
   </component>

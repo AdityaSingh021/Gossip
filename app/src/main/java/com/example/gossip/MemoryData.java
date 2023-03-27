@@ -1,6 +1,8 @@
 package com.example.gossip;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -94,9 +96,13 @@ public static String getData (Context context) {
                 sb.append(line);
             }
             data = sb.toString();
+//            Log.i("[];'",sb.toString());
+            System.out.println(sb);
         } catch (IOException e) {
+//            Log.i("MDerror",e.toString());
             e.printStackTrace();
         }
+//        Log.i("storedData",data);
         return data;
     }
 

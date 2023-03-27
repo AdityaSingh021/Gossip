@@ -27,6 +27,9 @@ public class MessagesList {
     public int getUnseenMessages() {
         return unseenMessages;
     }
+    public void setUnseenMessages(){
+        this.unseenMessages=0;
+    }
 
     public String getLastMessage() {
         return lastMessage;

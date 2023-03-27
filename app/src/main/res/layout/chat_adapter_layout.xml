@@ -10,35 +10,34 @@
         android:layout_height="wrap_content">
 
 
-
         <LinearLayout
             android:id="@+id/oppoLayout"
-            android:layout_marginStart="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:layout_marginEnd="100dp"
             android:orientation="vertical">
 
 
             <TextView
                 android:id="@+id/oppoMessage"
-                android:background="@drawable/recieve_msg"
-                android:padding="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="This is opponent message"/>
+                android:background="@drawable/recieve_msg"
+                android:padding="15dp"
+                android:text="This is opponent message"
+                android:textColor="@color/black" />
 
 
             <TextView
                 android:id="@+id/oppoMsgTime"
-                android:textSize="10sp"
-                android:layout_marginTop="5dp"
-                android:paddingStart="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingStart="20dp"
+                android:text="25-01-2023 10:30 PM"
                 android:textColor="@color/black"
-                android:text="25-01-2023 10:30 PM"/>
+                android:textSize="8sp" />
 
 
         </LinearLayout>
@@ -60,9 +59,9 @@
                 android:layout_gravity="end"
                 android:layout_height="wrap_content"
                 android:background="@drawable/send_msg"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:text="This is my message"
-                android:textColor="@color/white" />
+                android:textColor="@color/black" />
 
 
             <TextView
@@ -74,7 +73,7 @@
                 android:paddingStart="20dp"
                 android:text="25-01-2023 10:30 PM"
                 android:textColor="@color/black"
-                android:textSize="10sp" />
+                android:textSize="8sp" />
 
 
         </LinearLayout>

@@ -2,6 +2,7 @@ package com.example.gossip;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -56,9 +57,15 @@ public class Login extends AppCompatActivity {
 
 
         if(!MemoryData.getData(this).isEmpty()){
-            Intent i = new Intent(Login.this, HomeActivity.class);
-            i.putExtra("mobile",MemoryData.getData(this));
-            i.putExtra("name",MemoryData.getName(this));
+            Intent i = new Intent(Login.this, BottomNavigationPage.class);
+            Bundle bundle =new Bundle();
+            bundle.putString("mobile",MemoryData.getData(this));
+            bundle.putString("name",MemoryData.getData(this));
+//            i.putExtra("mobile",MemoryData.getData(this));
+//            i.putExtra("name",MemoryData.getName(this));
+            BlankFragment frag=new BlankFragment();
+            frag.setArguments(bundle);
+//            Fragmentclass frag=new Fragmentclass();
             startActivity(i);
             finish();
         }
@@ -74,13 +81,15 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (TextUtils.isEmpty(edtPhone.getText().toString())) {
-                    Toast.makeText(getApplicationContext(), "Please Enter a valid Phone Number", Toast.LENGTH_SHORT).show();
-                } else {
-                    String phone = "+91" + edtPhone.getText().toString();
-                    Toast.makeText(getApplicationContext(), "Sending Request", Toast.LENGTH_SHORT).show();
-                    sendVerificationCode(phone);
-                }
+                    if (TextUtils.isEmpty(edtPhone.getText().toString())) {
+                        Toast.makeText(getApplicationContext(), "Please Enter a valid Phone Number", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String phone = "+91" + edtPhone.getText().toString();
+                        Toast.makeText(getApplicationContext(), "Sending Request", Toast.LENGTH_SHORT).show();
+                        sendVerificationCode(phone);
+                    }
+
+
 
 
             }

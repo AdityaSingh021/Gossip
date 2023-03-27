@@ -6,6 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/black_rect"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -17,21 +18,21 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="40dp"
-                android:src="@drawable/ic_baseline_supervised_user_circle_24"></ImageView>
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/woman"></ImageView>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginEnd="10dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/profilePic">
 
                 <TextView
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -40,14 +41,15 @@
                     android:text="Fullname"
                     android:textStyle="bold"></TextView>\
                 <TextView
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:id="@+id/lastMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/archivo"
+                    android:textSize="14sp"
                     android:maxLines="1"
-                    android:text="This is last message"
-                    android:textStyle="bold"></TextView>
+                    android:text="This is last message"></TextView>
 
 
 
@@ -55,17 +57,17 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/unseenMessages"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="20dp"
-                android:text="1"
-                android:textSize="10sp"
-                android:textColor="#FFFFFF"
-                android:gravity="center"
                 android:background="@drawable/message_notification"
-                android:id="@+id/unseenMessages" />
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="10sp" />
         </RelativeLayout>
 
     </LinearLayout>

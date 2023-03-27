@@ -9,30 +9,50 @@
 
 
     <RelativeLayout
+        android:background="#0C0C0C"
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/man_3"></ImageView>
 
 
-        <ImageView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/ic_baseline_supervised_user_circle_24"></ImageView>
+            <TextView
+                android:id="@+id/name_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:maxLines="1"
+                android:text="User Name"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_below="@id/name_chat"
+                android:id="@+id/online"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:maxLines="1"
+                android:text="Online"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
 
-        <TextView
-            android:id="@+id/name_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="25dp"
-            android:maxLines="1"
-            android:text="User Name"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+
 
     </RelativeLayout>
 
@@ -45,7 +65,7 @@
         android:layout_below="@+id/topBar" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,27 +75,39 @@
         android:paddingTop="2dp"
         android:paddingBottom="2dp">
 
+            <EditText
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingStart="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="70dp"
+                android:background="@drawable/grey_rect"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/message"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:backgroundTint="#80808080"
-            android:hint="Type something..."
-            android:textColor="@color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/sendBtn"
+        <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/ic_baseline_send_24" />
+            android:background="@drawable/black_circle"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:layout_marginStart="5dp"
+                android:id="@+id/sendBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_baseline_send_24" />
 
 
-    </LinearLayout>
+        </RelativeLayout>
+
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
