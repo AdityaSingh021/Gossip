@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.Gossip" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#303333</item>
-        <item name="colorPrimaryVariant">#303333</item>
-        <item name="colorOnPrimary">#303333</item>
+        <item name="colorPrimary">#011216</item>
+        <item name="colorPrimaryVariant">#011216</item>
+        <item name="colorOnPrimary">#011216</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>

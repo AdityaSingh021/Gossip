@@ -1,21 +1,30 @@
 package com.example.gossip;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
@@ -28,20 +37,120 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.DexterBuilder;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.BasePermissionListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String AuthenticationId;
+    private ImageView take_image;
     private EditText edtOTP;
-    private TextView verifyOTPBtn;
+    private ImageView verifyOTPBtn;
     private TextView generateOTPBtn;
     private EditText Name;
     private EditText edtPhone;
     private String s;
     private String n;
+    Uri filepath;
+    Bitmap bitmap;
+    ImageView Mydp;
+    private String profilePicLink;
     private DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(data.getData()!=null && requestCode==1 && resultCode==RESULT_OK){
+            filepath=data.getData();
+            try{
+                InputStream inputStream=getContentResolver().openInputStream(filepath);
+                bitmap= BitmapFactory.decodeStream(inputStream);
+                String fileName = "profile_picture.jpg";
+                take_image.setImageBitmap(bitmap);
+
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("profile_picture_path", getApplicationContext().getFilesDir() + "/" + fileName);
+                editor.apply();
+//                Mydp=findViewById(R.id.Mydp);
+//                Mydp.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    public void uploadtofirebase(){
+//        ProgressDialog dialog=new ProgressDialog(this);
+//        dialog.setTitle("File Uploader");
+//        dialog.show();
+        FirebaseStorage storage=FirebaseStorage.getInstance();
+        StorageReference uploader=storage.getReference().child(edtPhone.getText().toString());
+        if(filepath!=null){
+            uploader.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                if (!Login.this.isFinishing() && dialog != null) {
+//                dialog.dismiss();
+//                }
+                    uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            s=edtPhone.getText().toString();
+                            n=Name.getText().toString();
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            if(!snapshot.child("Users").hasChild(s)){
+//                                Log.i("justCheck2","yess");
+                                    databaseReference.child("Users").child(s).child("Name").setValue(n);
+                                    databaseReference.child(s).child("Status").setValue(0);
+//                                if(profilePicLink==null) {
+//                                    databaseReference.child(s).child("profilePic").setValue("");
+//                                    Toast.makeText(getApplicationContext(),"Empty",Toast.LENGTH_SHORT).show();
+//                                }
+                                    databaseReference.child(s).child("profilePic").setValue(uri.toString());
+                                    Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
+//                            }
+//                            Toast.makeText(getApplicationContext(),"users m nhi h",Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getApplicationContext(),"bhar",Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+                                }
+                            });
+//                        profilePicLink=uri.toString();
+//                        Toast.makeText(getApplicationContext(),profilePicLink,Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                    Toast.makeText(getApplicationContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+//                float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
+//                dialog.setMessage("Uploaded :"+(int)percent+" %");
+                }
+            });
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +163,39 @@ public class Login extends AppCompatActivity {
         verifyOTPBtn.setVisibility(View.INVISIBLE);
         edtOTP.setVisibility(View.INVISIBLE);
         mAuth=FirebaseAuth.getInstance();
+        take_image=findViewById(R.id.profile_image);
+        take_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dexter.withContext(getApplicationContext())
+                        .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        .withListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                                Intent i=new Intent(Intent.ACTION_PICK);
+                                i.setType("image/*");
+                                startActivityForResult(Intent.createChooser(i,"Please select Image"),1);
+
+                            }
+
+                            @Override
+                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+                                permissionToken.continuePermissionRequest();
+                            }
+                        }).check();
+            }
+        });
+
 
 
         if(!MemoryData.getData(this).isEmpty()){
-            Intent i = new Intent(Login.this, BottomNavigationPage.class);
+//            Toast.makeText(getApplicationContext(),MemoryData.getData(this).toString(),Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(Login.this, ContactChats.class);
             Bundle bundle =new Bundle();
             bundle.putString("mobile",MemoryData.getData(this));
             bundle.putString("name",MemoryData.getData(this));
@@ -65,6 +203,7 @@ public class Login extends AppCompatActivity {
 //            i.putExtra("name",MemoryData.getName(this));
             BlankFragment frag=new BlankFragment();
             frag.setArguments(bundle);
+//            Intent i=new Intent(getApplicationContext(),BottomNavigationPage.class);
 //            Fragmentclass frag=new Fragmentclass();
             startActivity(i);
             finish();
@@ -97,28 +236,15 @@ public class Login extends AppCompatActivity {
         verifyOTPBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                s=edtPhone.getText().toString();
-                n=Name.getText().toString();
+                uploadtofirebase();
                 // validating if the OTP text field is empty or not.
                 if (TextUtils.isEmpty(edtOTP.getText().toString())) {
                     // if the OTP text field is empty display
                     // a message to user to enter OTP
                     Toast.makeText(Login.this, "Please enter OTP", Toast.LENGTH_SHORT).show();
                 } else {
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(!snapshot.child("Users").hasChild(s)){
-                                databaseReference.child("Users").child(s).child("Name").setValue(n);
-                                Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+//                    Log.i("justCheck1","yess");
+//                    Toast.makeText(getApplicationContext(),"1111111",Toast.LENGTH_SHORT).show();
                     // if OTP field is not empty calling
                     // method to verify the OTP.
                     verifyCode(edtOTP.getText().toString());
@@ -208,9 +334,9 @@ public class Login extends AppCompatActivity {
 
 
                             //saving name to Memory
-
-                            MemoryData.saveName(n,Login.this);
-                            Intent i = new Intent(Login.this, HomeActivity.class);
+//                            Toast.makeText(getApplicationContext(),Name.getText().toString(),Toast.LENGTH_SHORT).show();
+                            MemoryData.saveName(Name.getText().toString(),Login.this);
+                            Intent i = new Intent(Login.this, ContactChats.class);
                             i.putExtra("mobile",s);
                             i.putExtra("name",n);
                             startActivity(i);

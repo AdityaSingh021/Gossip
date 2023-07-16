@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.gossip">
-
+    <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,6 +18,21 @@
         android:theme="@style/Theme.Gossip"
         tools:targetApi="31">
         <activity
+            android:name=".StartRandomChat"
+            android:exported="false" />
+        <activity
+            android:name=".ContactChats"
+            android:exported="true"></activity>
+        <activity
+            android:name=".Start_Screen_1"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".HomeActivity"
             android:exported="false" />
         <activity
@@ -27,19 +43,21 @@
             android:exported="false" />
         <activity
             android:name=".SplashScreen"
-            android:exported="false" />
+            android:exported="true">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
         <activity
             android:name=".BottomNavigationPage"
             android:exported="false" />
         <activity
             android:name=".Login"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />

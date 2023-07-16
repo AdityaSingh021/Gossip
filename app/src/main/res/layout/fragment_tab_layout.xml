@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".TabLayout">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/black" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tab_layout" />
+
+
+    </RelativeLayout>
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/bottomBar"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/black"
+
+        tools:ignore="BottomAppBar">
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:labelVisibilityMode="labeled"
+            app:itemIconSize="25dp"
+            android:id="@+id/bottom_nav"
+            app:itemIconTint="@color/bottom_nav_icon_color"
+            app:itemTextColor="@color/white"
+            app:menu="@menu/bottom_nav_menu"
+            android:background="@android:color/transparent">
+
+
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+</RelativeLayout>

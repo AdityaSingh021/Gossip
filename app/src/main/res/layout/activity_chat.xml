@@ -4,65 +4,106 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/blank_frag_bg"
     tools:context=".chat.Chat">
 
 
-    <RelativeLayout
-        android:background="#0C0C0C"
-        android:id="@+id/topBar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <RelativeLayout
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/user_info_bg_char_adapter"
+            android:id="@+id/topBar"
+            android:layout_width="wrap_content"
+            android:elevation="10dp"
             android:layout_height="wrap_content">
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/man_3"></ImageView>
+
+
+                <TextView
+                    android:id="@+id/name_chat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="80dp"
+                    android:maxLines="1"
+                    android:text="User Name"
+                    android:textColor="@color/white"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/Status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/name_chat"
+                    android:layout_marginStart="80dp"
+                    android:maxLines="1"
+                    android:text="Offline"
+                    android:textColor="#94E8B4"
+                    android:textSize="15dp" />
+
+            </RelativeLayout>
+
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/man_3"></ImageView>
+                android:id="@+id/options"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/menu_dots" />
+
+            <!--        <ImageView-->
+            <!--            android:id="@+id/camera"-->
+            <!--            android:layout_width="30dp"-->
+            <!--            android:layout_height="30dp"-->
+            <!--            android:layout_alignParentEnd="true"-->
+            <!--            android:layout_centerVertical="true"-->
+            <!--            android:layout_marginRight="60dp"-->
+            <!--            android:src="@drawable/camera_icon" />-->
 
 
-            <TextView
-                android:id="@+id/name_chat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
-                android:maxLines="1"
-                android:text="User Name"
-                android:textColor="@color/white"
-                android:textSize="18dp"
-                android:textStyle="bold" />
 
-            <TextView
-                android:layout_below="@id/name_chat"
-                android:id="@+id/online"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
-                android:maxLines="1"
-                android:text="Online"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:textStyle="bold" />
 
         </RelativeLayout>
 
-
-
-
-    </RelativeLayout>
+        <ImageView
+            android:padding="10dp"
+            android:layout_marginStart="2dp"
+            android:layout_width="100dp"
+            android:layout_height="65dp"
+            android:background="@drawable/user_info_bg_char_adapter"
+            android:layout_weight="1"
+            android:src="@drawable/camera_icon"/>
+    </LinearLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chattingRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@+id/bottomBar"
-        android:layout_below="@+id/topBar" />
+        android:layout_marginTop="70dp" />
 
 
     <RelativeLayout
@@ -70,42 +111,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
-        android:orientation="horizontal"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp">
+        android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/message"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:paddingStart="20dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="70dp"
-                android:background="@drawable/grey_rect"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+        <EditText
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="70dp"
+            android:background="@drawable/type_message_bg"
+            android:fontFamily="@font/open_sans"
+
+            android:hint="Message"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:paddingStart="20dp"
+            android:textColor="@color/white"
+            android:textColorHint="#70FFFFFF"
+            android:textSize="14sp" />
 
         <RelativeLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/black_circle"
-            android:layout_alignParentEnd="true">
+            android:background="@drawable/black_circle">
 
             <ImageView
-                android:layout_marginStart="5dp"
                 android:id="@+id/sendBtn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="5dp"
                 android:background="@drawable/ic_baseline_send_24" />
 
 
         </RelativeLayout>
-
 
 
     </RelativeLayout>

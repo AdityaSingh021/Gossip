@@ -5,11 +5,12 @@ buildscript {
         google()  // Google's Maven repository
 
         mavenCentral()  // Maven Central repository
+        maven { url 'https://jitpack.io' }
 
     }
     dependencies {
         // Add the dependency for the Google services Gradle plugin
-        classpath 'com.google.gms:google-services:4.3.14'
+        classpath 'com.google.gms:google-services:4.3.15'
 
     }
 }
@@ -27,6 +28,26 @@ allprojects {
         google()  // Google's Maven repository
 
         mavenCentral()  // Maven Central repository
+//        jcenter()
+
+        maven { url 'https://jitpack.io' }
+//        maven { url 'https://www.jitpack.io' }
+        def githubProperties = new Properties()
+        githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+        repositories {
+            maven {
+                name = "GitHubPackages"
+
+                url = uri("https://maven.pkg.github.com/Cuberto/liquid-swipe-android")
+                credentials {
+                    /** Create github.properties in root project folder file with
+                     ** gpr.usr=GITHUB_USER_ID & gpr.key=PERSONAL_ACCESS_TOKEN
+                     ** Or set env variable GPR_USER & GPR_API_KEY if not adding a properties file**/
+                    username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                    password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+                }
+            }
+        }
 
     }
 }

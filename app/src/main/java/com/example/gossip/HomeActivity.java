@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Outline;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
     private final List<MessagesList> messagesLists=new ArrayList<>();
     private DatabaseReference databaseReference;
 
-
+    Bitmap temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,8 +216,8 @@ public class HomeActivity extends AppCompatActivity {
                                                 if(dataSnapshot1.child("messages").getChildrenCount()==0){
 //                                                    Toast.makeText(getApplicationContext(),String.valueOf(messagesLists.size())+"   "+chatKey,Toast.LENGTH_SHORT).show();
 //                                                    if(!set.contains(chatKey)){
-                                                        MessagesList messagesList = new MessagesList(getName, getmobile, "", 0, chatKey);
-                                                        messagesLists.add(messagesList);
+//                                                        MessagesList messagesList = new MessagesList(getName, getmobile, "", temp,0, chatKey);
+//                                                        messagesLists.add(messagesList);
 //                                                        set.add(chatKey);
                                                         Log.i("if0","aaaaaa");
 //                                                        break;
@@ -238,8 +239,8 @@ public class HomeActivity extends AppCompatActivity {
                                                     }
 
                                                     Log.i("chatKey",String.valueOf(chatKey)+"    "+String.valueOf(unseenMessages));
-                                                    MessagesList messagesList = new MessagesList(getName, getmobile, lastMessage, unseenMessages, chatKey);
-                                                    messagesLists.add(messagesList);
+//                                                    MessagesList messagesList = new MessagesList(getName, getmobile, lastMessage,temp, unseenMessages, chatKey);
+//                                                    messagesLists.add(messagesList);
 
                                                 }
 

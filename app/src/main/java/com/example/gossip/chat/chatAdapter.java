@@ -1,5 +1,6 @@
 package com.example.gossip.chat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,14 +18,15 @@ import com.example.gossip.R;
 import java.util.List;
 
 public class chatAdapter extends RecyclerView.Adapter<chatAdapter.MyViewHolder> {
+//    private ProfilePic_data
     private List<chatList> chatLists;
     private final Context context;
     private String userMobile;
 
-    public chatAdapter(List<chatList> charLists, Context context) {
+    public chatAdapter(List<chatList> charLists, Context context,String userMobile) {
         this.chatLists = charLists;
         this.context = context;
-        this.userMobile= MemoryData.getData(context);
+        this.userMobile= userMobile;
     }
 
     @NonNull
@@ -33,18 +35,20 @@ public class chatAdapter extends RecyclerView.Adapter<chatAdapter.MyViewHolder> 
         return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_adapter_layout,null));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull chatAdapter.MyViewHolder holder, int position) {
 
 
         chatList list2=chatLists.get(position);
-        Log.i("myPhoneis",list2.getMobile());
+//        Log.i("myPhoneis",list2.getMobile());
 
-        if(list2.getMobile().equals(userMobile)){
+        if(!userMobile.isEmpty() && list2.getMobile().equals(userMobile)){
             holder.myLayout.setVisibility(View.VISIBLE);
             holder.oppoLayout.setVisibility(View.GONE);
             holder.myMessage.setText(list2.getMessage());
             holder.myTime.setText(list2.getDate()+"  "+list2.getTime());
+            Log.i("datChecking",list2.getDate());
         }else{
             holder.myLayout.setVisibility(View.GONE);
             holder.oppoLayout.setVisibility(View.VISIBLE);

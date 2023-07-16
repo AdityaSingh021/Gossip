@@ -3,74 +3,267 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".BlankFragment">
+        <LinearLayout
 
-        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="@drawable/semi_circle"
-            tools:ignore="MissingConstraints">
+            android:layout_height="match_parent"
+            android:background="@drawable/blank_frag_bg"
+            android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/rl1"
+                <TextView
+                        android:layout_marginTop="30dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true">
+                    android:text="Messages"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/open_sans"
+                        android:textSize="24dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginBottom="10dp"/>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                        <RelativeLayout
+                            android:layout_gravity="bottom"
+                            android:layout_width="0dp"
+                            android:layout_marginHorizontal="20dp"
                             android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="20dp"
-                            android:orientation="vertical">
+                            android:background="@drawable/semi_circle"
+                                android:layout_weight="1">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Aditya Singh"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="20dp"
-                                    android:textStyle="bold" />
+                                <ImageView
+                                    android:id="@+id/search"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_baseline_search_24"/>
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Online"
-                                    android:textColor="#39FF13"
-                                    android:textSize="15dp" />
-                        </LinearLayout>
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginBottom="-3dp"
+                                android:layout_toEndOf="@+id/search"
+                                android:backgroundTint="@android:color/transparent"
+                                android:fontFamily="@font/open_sans"
+                                android:gravity="bottom"
+                                android:hint="Search contacts"
+                                android:maxLines="1"
+                                android:textColorHint="@color/white"
+                                android:textSize="15dp" />
+
+
+                        </RelativeLayout>
+
 
                         <ImageView
+                            android:layout_marginBottom="3dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginRight="20dp"
+                            android:id="@+id/camera"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="60dp"
-                            android:src="@drawable/options" />
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/add_user" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="10dp"
-                            android:src="@drawable/man_2" />
-                </RelativeLayout>
+                    <ImageView
+                        android:layout_gravity="bottom"
+                        android:layout_marginRight="20dp"
+                        android:id="@+id/Options"
+                        android:layout_width="35dp"
+                        android:layout_height="30dp"
 
-        </RelativeLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="rl1"
-            android:orientation="Horizontal"
-            >
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/menu_dots" />
+
+<!--                        <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                            android:id="@+id/user_image"-->
+<!--                            android:layout_width="30dp"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_alignParentEnd="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:layout_marginRight="20dp"-->
+<!--                            android:src="@drawable/default_user" />-->
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingConstraints">
+
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/rl1"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_centerVertical="true">-->
+
+<!--                                <RelativeLayout-->
+<!--                                    android:layout_width="230dp"-->
+<!--                                    android:layout_height="35dp"-->
+<!--                                    android:layout_centerVertical="true"-->
+<!--                                    android:layout_marginStart="20dp"-->
+<!--                                    android:layout_marginVertical="10dp"-->
+<!--                                    android:layout_marginTop="20dp"-->
+<!--                                    android:background="@drawable/semi_circle">-->
+
+<!--                                        <ImageView-->
+<!--                                            android:id="@+id/search"-->
+<!--                                            android:layout_width="20dp"-->
+<!--                                            android:layout_height="20dp"-->
+<!--                                            android:layout_centerVertical="true"-->
+<!--                                            android:layout_marginStart="20dp"-->
+<!--                                            android:src="@drawable/ic_baseline_search_24" />-->
+
+<!--                                        <EditText-->
+<!--                                            android:layout_width="match_parent"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:layout_alignParentBottom="true"-->
+<!--                                            android:layout_centerInParent="true"-->
+<!--                                            android:layout_marginStart="10dp"-->
+<!--                                            android:layout_marginBottom="-3dp"-->
+<!--                                            android:layout_toEndOf="@+id/search"-->
+<!--                                            android:backgroundTint="@android:color/transparent"-->
+<!--                                            android:fontFamily="@font/open_sans"-->
+<!--                                            android:gravity="bottom"-->
+<!--                                            android:hint="Search contacts.."-->
+<!--                                            android:maxLines="1"-->
+<!--                                            android:textColorHint="@color/white"-->
+<!--                                            android:textSize="15dp" />-->
+
+<!--                                        &lt;!&ndash;                                        <TextView&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            android:layout_width="wrap_content"&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            android:text="Online"&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            android:textColor="#39FF13"&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            android:textSize="15dp" />&ndash;&gt;-->
+<!--                                </RelativeLayout>-->
+<!--                                <RelativeLayout-->
+<!--                                    android:layout_marginStart="10dp"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="match_parent">-->
+
+<!--                                        <ImageView-->
+<!--                                            android:id="@+id/camera"-->
+<!--                                            android:layout_width="30dp"-->
+<!--                                            android:layout_height="30dp"-->
+
+<!--                                            android:layout_centerInParent="true"-->
+<!--                                            android:src="@drawable/camera_icon" />-->
+
+<!--                                </RelativeLayout>-->
+
+
+
+<!--                                <RelativeLayout-->
+<!--                                    android:layout_marginRight="20dp"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="match_parent">-->
+
+<!--                                        <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                                            android:id="@+id/user_image"-->
+<!--                                            android:layout_width="30dp"-->
+<!--                                            android:layout_height="30dp"-->
+<!--                                            android:layout_alignParentEnd="true"-->
+<!--                                            android:layout_centerVertical="true"-->
+<!--                                            android:layout_marginRight="10dp"-->
+<!--                                            android:src="@drawable/default_user" />-->
+
+<!--                                </RelativeLayout>-->
+
+
+<!--                        </LinearLayout>-->
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:paddingVertical="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="horizontal"
+                    >
+<!--                        <RelativeLayout-->
+<!--                            android:layout_width=""-->
+<!--                            android:layout_height=""-->
+                        <LinearLayout
+                            android:layout_marginStart="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_height="wrap_content">
+                            <RelativeLayout
+                                android:layout_width="65dp"
+                                android:layout_height="60dp"
+                                >
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/my_story"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:src="@drawable/default_user" />
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:src="@drawable/add_icon" />
+
+                            </RelativeLayout>
+
+
+                                <TextView
+                                    android:maxLines="1"
+                                    android:fontFamily="@font/open_sans"
+                                    android:layout_width="55dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="Your story"
+                                    android:gravity="center"
+                                    android:textSize="10dp"
+                                    android:textColor="@color/white" />
+                        </LinearLayout>
+
+                </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Messages are end-to-end encrypted to ensure the data confidentiality. people outside of your chats cannot access, modify and delete your conversations."
+                    android:textColor="#cb7d67"
+                    android:layout_marginHorizontal="20dp"
+                    android:textSize="15dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/messagesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
+
+
+            </RelativeLayout>
+
 
         </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="70dp"
-            android:id="@+id/messagesRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
+
 
 
 </FrameLayout>

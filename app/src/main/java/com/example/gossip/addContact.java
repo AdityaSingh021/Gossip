@@ -28,7 +28,7 @@ public class addContact extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
-        String mobile=getIntent().getStringExtra("mobile");
+        String mobile=MemoryData.getData(getApplicationContext());
 
         EditText newUser_mobile=findViewById(R.id.newUser);
         EditText newUser_name=findViewById(R.id.newUserName);
@@ -38,9 +38,11 @@ public class addContact extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 databaseReference.child(mobile).child("contacts").child(newUser_mobile.getText().toString()).child("Name").setValue(newUser_name.getText().toString());
+//                databaseReference.child(mobile).child("contacts").child(newUser_mobile.getText().toString()).child("profilePic").setValue();
                 databaseReference.child(newUser_mobile.getText().toString()).child("contacts").child(mobile).child("Name").setValue(my_name);
-                databaseReference1=databaseReference.child(mobile).child("chat");
+                databaseReference1=databaseReference;
                 databaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -48,9 +50,10 @@ public class addContact extends AppCompatActivity {
                         chatCount=String.valueOf(getChatCounts);
                         Log.i("hhhhhh",chatCount+"  "+getChatCounts);
 
-                        databaseReference1.child(chatCount).child("messages").setValue("");
-                        databaseReference1.child(chatCount).child("user_1").setValue(mobile);
-                        databaseReference1.child(chatCount).child("user_2").setValue(newUser_mobile.getText().toString());
+                        databaseReference1.child(mobile).child("chat").child(chatCount).child("messages").setValue("");
+                        databaseReference1.child(mobile).child("chat").child(chatCount).child("user_1").setValue(mobile);
+                        databaseReference1.child(mobile).child("chat").child(chatCount).child("user_2").setValue(newUser_mobile.getText().toString());
+                        databaseReference1.child(mobile).child("contacts").child(newUser_mobile.getText().toString()).child("profilePic").setValue(snapshot.child(newUser_mobile.getText().toString()).child("profilePic").getValue(String.class));
 
 
                     }

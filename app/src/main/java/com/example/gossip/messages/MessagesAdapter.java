@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +26,16 @@ import com.example.gossip.R;
 import com.example.gossip.chat.Chat;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ConcurrentModificationException;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyViewHolder> {
     private List<MessagesList> messagesLists;
@@ -45,10 +55,48 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.MyViewHolder holder, int position) {
         MessagesList list2=messagesLists.get(position);
+        Bitmap bitmap=MemoryData.getProfilePicture(list2.getMobile(), context.getApplicationContext());
+////        Toast.makeText(context.getApplicationContext(),list2.getMobile()+" "+list2.getLastMessage(),Toast.LENGTH_SHORT).show();
+//        Log.i("myList",list2.getMobile()+" "+position+"   "+messagesLists.size());
+//        if(bitmap!=null){
+//            Log.i("myList","andar hu");
+//            holder.profilePic.setImageBitmap(bitmap);
+////            Toast.makeText(context.getApplicationContext(),list2.getMobile()+" "+list2.getLastMessage(),Toast.LENGTH_SHORT).show();
+//        }
+//        bitmap=null;
+//        for(int i=0;i<messagesLists.size();i++){
+//            Log.i("hdmi345",messagesLists.get(i).getMobile()+" "+messagesLists.get(i).getProfilePic()+" "+i);
+//        }
 
+        if(bitmap!=null){
+//            Log.i("hdmi345",position+"  "+list2.getMobile()+"  "+list2.getLastNode());
+            holder.profilePic.setImageBitmap(bitmap);
+        }else{
+            holder.profilePic.setImageResource(R.drawable.default_user);
+        }
+        if(list2.getName().isEmpty()) list2.setName(list2.getMobile());
         holder.name.setText(list2.getName());
         holder.lastMessage.setText(list2.getlastMessage());
 
+        long currentTimeStamp=System.currentTimeMillis();
+        long lastNodeTime= list2.getLastNode();
+        long timeDifferenceMillis = currentTimeStamp - lastNodeTime;
+
+
+        if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(1)) {
+            // Format the timestamp of the last message
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            String lastMessageTime = sdf.format(new Date(list2.getLastNode()));
+            holder.time.setText(lastMessageTime);
+//            System.out.println("Last message was sent/received at " + lastMessageTime);
+        }else {
+            // Convert milliseconds to days
+            long days = TimeUnit.MILLISECONDS.toDays(timeDifferenceMillis);
+
+            // Display the time difference in days
+            String timeDifference = days + " day" + (days > 1 ? "s" : "") + " ago";
+            holder.time.setText(timeDifference);
+        }
         if(list2.getUnseenMessages()==0){
             holder.unseenMessages.setVisibility(View.GONE);
 //            Toast.makeText(context.getApplicationContext(),String.valueOf(list2.getUnseenMessages()),Toast.LENGTH_SHORT).show();
@@ -85,12 +133,20 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             public void onClick(View v) {
 //                list2.setUnseenMessages();
 //                updateData();
-                list2.setUnseenMessages();
-                updateData(messagesLists);
+
+//                holder.unseenMessages.setVisibility(View.INVISIBLE);
+                if(list2.getUnseenMessages()>0){
+                    list2.setUnseenMessages();
+//                    list2.setProfilePic(bitmap);
+                    updateData(messagesLists);
+//                    MemoryData.storeMessageList(v.getContext(), messagesLists);
+                }
                 Intent intent=new Intent(context, Chat.class);
                 intent.putExtra("mobile",list2.getMobile());
                 intent.putExtra("name",list2.getName());
-                intent.putExtra("chat_key",list2.getChatKey() );
+                intent.putExtra("chat_key",list2.getChatKey());
+//                intent.putExtra("profilePic",list2.getProfilePic());
+
                 context.startActivity(intent);
             }
         });
@@ -105,9 +161,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         return messagesLists.size();
     }
     static class MyViewHolder extends RecyclerView.ViewHolder{
-        private ImageView profilePic;
+        private CircleImageView profilePic;
         private TextView name,lastMessage,unseenMessages;
         private RelativeLayout rootLayout;
+        private TextView time;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             profilePic =itemView.findViewById(R.id.profilePic);
@@ -115,6 +172,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             lastMessage=itemView.findViewById(R.id.lastMessage);
             unseenMessages=itemView.findViewById(R.id.unseenMessages);
             rootLayout=itemView.findViewById(R.id.rootLayout);
+            time=itemView.findViewById(R.id.time);
+
         }
     }
 }

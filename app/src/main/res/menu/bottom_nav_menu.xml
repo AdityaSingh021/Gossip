@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/chat_icon"
-        android:title="Home" />
+        android:icon="@drawable/home_icon"
+        android:title=""/>
     <item
-        android:id="@+id/Search"
-        android:icon="@drawable/search_icon"
-        android:title="Home" />
-    <item
-        android:title="" />
+        android:id="@+id/Earth"
+        android:icon="@drawable/chat_icon_1"
+        android:title=""/>
+
     <item
         android:id="@+id/Camera"
-        android:icon="@drawable/camera_icon"
-        android:title="Home" />
+        android:icon="@drawable/notification"
+        android:title="" />
 
+<!--    <item-->
+<!--        android:id="@+id/Add_User"-->
+<!--        android:icon="@drawable/add_user"-->
+<!--        android:title="Add" />-->
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/add_user"
-        android:title="Settings" />
-
+        android:id="@+id/Menu"
+        android:icon="@drawable/user_icon"
+        android:title=""/>
 
 </menu>

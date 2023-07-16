@@ -6,47 +6,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/black_rect"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profilePic"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
-                android:src="@drawable/woman"></ImageView>
+                android:src="@drawable/default_user"></de.hdodenhof.circleimageview.CircleImageView>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="15dp"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/profilePic">
 
                 <TextView
+                    android:fontFamily="@font/open_sans"
+                    android:layout_marginBottom="2dp"
                     android:textColor="@color/white"
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:maxLines="1"
                     android:text="Fullname"
                     android:textStyle="bold"></TextView>\
                 <TextView
+                    android:fontFamily="@font/open_sans"
                     android:textColor="@color/white"
                     android:id="@+id/lastMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/archivo"
                     android:textSize="14sp"
                     android:maxLines="1"
                     android:text="This is last message"></TextView>
@@ -56,18 +57,39 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/unseenMessages"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/message_notification"
-                android:gravity="center"
-                android:text="1"
-                android:textColor="@color/black"
-                android:textSize="10sp" />
+                android:layout_marginEnd="20dp">
+
+                <TextView
+                    android:id="@+id/unseenMessages"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/time"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/message_notification"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/black"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:text="1Day"
+                    android:textColor="@color/white"
+                    android:textSize="10sp" />
+
+            </RelativeLayout>
+
+
         </RelativeLayout>
 
     </LinearLayout>
