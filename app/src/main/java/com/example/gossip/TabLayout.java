@@ -72,20 +72,20 @@ public class TabLayout extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView= inflater.inflate(R.layout.fragment_tab_layout, container, false);
-        com.google.android.material.tabs.TabLayout tabLayout = rootView.findViewById(R.id.tab_layout);
-        viewPager = rootView.findViewById(R.id.view_pager);
-
-        // Create an instance of your FragmentPagerAdapter or FragmentStatePagerAdapter
-        CustomPagerAdapter pagerAdapter = new CustomPagerAdapter(getChildFragmentManager());
-
-
-        pagerAdapter.addFragment(new BlankFragment(),"tab 1");
-        pagerAdapter.addFragment(new RandomChat(),"tab 2");
-        // Set the adapter to the ViewPager
-        viewPager.setAdapter(pagerAdapter);
-
-        // Connect the TabLayout with the ViewPager
-        tabLayout.setupWithViewPager(viewPager);
+//        com.google.android.material.tabs.TabLayout tabLayout = rootView.findViewById(R.id.tab_layout);
+//        viewPager = rootView.findViewById(R.id.view_pager);
+//
+//        // Create an instance of your FragmentPagerAdapter or FragmentStatePagerAdapter
+//        CustomPagerAdapter pagerAdapter = new CustomPagerAdapter(getChildFragmentManager());
+//
+//
+//        pagerAdapter.addFragment(new BlankFragment(),"tab 1");
+//        pagerAdapter.addFragment(new RandomChat(),"tab 2");
+//        // Set the adapter to the ViewPager
+//        viewPager.setAdapter(pagerAdapter);
+//
+//        // Connect the TabLayout with the ViewPager
+//        tabLayout.setupWithViewPager(viewPager);
 
         return rootView;
     }

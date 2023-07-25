@@ -1,5 +1,8 @@
 package com.example.gossip;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +50,7 @@ import java.util.Objects;
 import java.util.Random;
 
 import com.google.android.flexbox.FlexboxLayout.LayoutParams;
+import com.siddydevelops.customlottiedialogbox.CustomLottieDialog;
 
 import io.github.douglasjunior.androidSimpleTooltip.SimpleTooltip;
 
@@ -73,12 +77,20 @@ public class RandomChat extends Fragment {
     private TextView textView7;
     private TextView textView8;
     private TextView textView9;
+    private  EditText UserName;
+    private TextView MyHashTags;
+    private View view1;
     private TextView search;
     public int condition;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");;
+    private TextView text;
+    CustomLottieDialog customLottieDialog;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");
+    ;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private Context context;
+    private String myUserName;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -114,13 +126,20 @@ public class RandomChat extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    private void addTextToFlowLayout(String text,FlexboxLayout flexboxLayout) {
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+    private void addTextToFlowLayout(String text, FlexboxLayout flexboxLayout) {
         TextView textView = new TextView(getContext());
         textView.setText(text);
         textView.setBackgroundResource(R.drawable.hashtag_bg);
         textView.setTextSize(15);
         textView.setPadding(40, 30, 40, 30);
-
+        view1.setVisibility(View.VISIBLE);
+        MyHashTags.setVisibility(View.VISIBLE);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -133,41 +152,56 @@ public class RandomChat extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_random_chat, container, false);
+        View view = inflater.inflate(R.layout.fragment_random_chat, container, false);
 //        add=view.findViewById(R.id.add);
-        enter_tags=view.findViewById(R.id.type_tags);
-        ImageView my_dp=view.findViewById(R.id.profile_image);
+        enter_tags = view.findViewById(R.id.type_tags);
+        ImageView my_dp = view.findViewById(R.id.profile_image);
 //        BottomNavigationPage.customLottieDialog.dismiss();
         flexboxLayout = view.findViewById(R.id.flexboxLayout);
-        PopularHashTags=view.findViewById(R.id.PopularHashTags);
-        textView1=view.findViewById(R.id.textview1);
-        textView2=view.findViewById(R.id.textview2);
-        textView3=view.findViewById(R.id.textview3);
-        textView4=view.findViewById(R.id.textview4);
-        textView5=view.findViewById(R.id.textview5);
-        textView6=view.findViewById(R.id.textview6);
-        textView7=view.findViewById(R.id.textview7);
-        search=view.findViewById(R.id.Search);
+        PopularHashTags = view.findViewById(R.id.PopularHashTags);
+        textView1 = view.findViewById(R.id.textview1);
+        textView2 = view.findViewById(R.id.textview2);
+        textView3 = view.findViewById(R.id.textview3);
+        textView4 = view.findViewById(R.id.textview4);
+        textView5 = view.findViewById(R.id.textview5);
+        textView6 = view.findViewById(R.id.textview6);
+        textView7 = view.findViewById(R.id.textview7);
+        search = view.findViewById(R.id.Search);
+        UserName=view.findViewById(R.id.user_name);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyAuthenticationId",MODE_PRIVATE);
 
+        UserName.setText(sharedPreferences.getString("name","User@1a8e"));
+        view1=view.findViewById(R.id.view1);
+        MyHashTags=view.findViewById(R.id.MyHashTags);
+        view1.setVisibility(View.GONE);
+        MyHashTags.setVisibility(View.GONE);
+        TextView showLess = view.findViewById(R.id.showLess);
+        TextView showMore = view.findViewById(R.id.showMore);
+        showMore.setVisibility(View.INVISIBLE);
+        showLess.setVisibility(View.VISIBLE);
+        List<String> myTags = new ArrayList<>();
+        myUserName = UserName.getText().toString();
+//        UserName.setClickable(false);
+        UserName.setFocusable(false);
+        UserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        TextView showLess=view.findViewById(R.id.showLess);
-        TextView showMore=view.findViewById(R.id.showMore);
-        showLess.setVisibility(View.INVISIBLE);
-        List<String> myTags=new ArrayList<>();
-        String myUserName=MemoryData.getName(getContext());
+            }
+        });
 //        databaseReference.child("RandomChat").child("HashTags").setValue("");
-        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(0);
-        databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue("");
+
         databaseReference.child("RandomChat").child("Status").child(myUserName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                Toast.makeText(getContext(),"bhar",Toast.LENGTH_SHORT).show();
-                if(snapshot.child("State").getValue()==Long.valueOf(1)){
+                if (snapshot.child("State").getValue() == Long.valueOf(1)) {
 //                    Toast.makeText(getContext(),"andar",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getContext(), StartRandomChat.class);
                     intent.putExtra("name", snapshot.child("OppoName").getValue(String.class));
                     intent.putExtra("myUserName", myUserName);
-                    intent.putExtra("chatRoomName",snapshot.child("CRN").getValue(String.class));
+                    intent.putExtra("chatRoomName", snapshot.child("CRN").getValue(String.class));
+//                    condition=1;
                     startActivity(intent);
                 }
             }
@@ -180,34 +214,36 @@ public class RandomChat extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("HashTagsList", String.valueOf(myTags));
-                if(!myTags.isEmpty()){
+                openCenteredDialog();
+//                Log.i("HashTagsList", String.valueOf(myTags));
+                if (!myTags.isEmpty()) {
                     databaseReference.child("RandomChat").child("HashTags").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            int flag=0;
-                            condition=0;
-                            for(String s:myTags){
+                            int flag = 0;
+                            condition = 0;
+                            for (String s : myTags) {
 //                                if(condition==0) {
-                                    if (snapshot.hasChild(s) && snapshot.child(s).getChildrenCount() > 0) {
-                                        flag = 1;
-                                        int users_count = (int) snapshot.child(s).getChildrenCount();
+                                if (snapshot.hasChild(s) && snapshot.child(s).getChildrenCount() > 0) {
+                                    flag = 1;
+                                    int users_count = (int) snapshot.child(s).getChildrenCount();
 //                                        Random random = new Random();
 //                                        int randomUser = random.nextInt(users_count - 1 + 1);
 //                                    Toast.makeText(getContext(),String.valueOf(randomUser),Toast.LENGTH_SHORT).show();
-                                        for (DataSnapshot snapshot1 : snapshot.child(s).getChildren()) {
-                                            String oppoUserName=snapshot1.getKey();
+                                    for (DataSnapshot snapshot1 : snapshot.child(s).getChildren()) {
+                                        String oppoUserName = snapshot1.getKey();
+                                        if(!oppoUserName.equals(myUserName)) {
                                             databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("State").addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot2) {
-                                                    if(snapshot2.getValue()==Long.valueOf(0)){
-                                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue(myUserName+" "+oppoUserName);
-                                                        databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("CRN").setValue(myUserName+" "+oppoUserName);
-                                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(1);
-                                                        databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("State").setValue(1);
+                                                    if (snapshot2.getValue() == Long.valueOf(0)) {
+                                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue(myUserName + " " + oppoUserName);
+                                                        databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("CRN").setValue(myUserName + " " + oppoUserName);
                                                         databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("OppoName").setValue(myUserName);
                                                         databaseReference.child("RandomChat").child("Status").child(myUserName).child("OppoName").setValue(oppoUserName);
-                                                        condition=1;
+                                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(1);
+                                                        databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("State").setValue(1);
+                                                        condition = 1;
 //                                                        Intent intent = new Intent(getContext(), StartRandomChat.class);
 //                                                        intent.putExtra("name", oppoUserName);
 //                                                        intent.putExtra("myUserName", myUserName);
@@ -222,20 +258,24 @@ public class RandomChat extends Fragment {
 
                                                 }
                                             });
-//                                            randomUser--;
                                         }
-
-
-                                        // Now match with the Random User
+//                                            randomUser--;
                                     }
-                                        databaseReference.child("RandomChat").child("HashTags").child(s).child(myUserName).setValue("");
+
+
+                                    // Now match with the Random User
+                                }
+                                databaseReference.child("RandomChat").child("HashTags").child(s).child(myUserName).setValue("");
+//                                Toast.makeText(getContext(), "Working", Toast.LENGTH_SHORT).show();
 //                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(0);
 //                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue("");
 //                                    }
 //                                }else break;
 
                             }
-                            if(flag==0) Toast.makeText(getContext(),"No users Online with your hashtags",Toast.LENGTH_SHORT).show();
+                            if (flag == 0)
+                                text.setText("No users Online with your hashtags");
+//                                Toast.makeText(getContext(), "No users Online with your hashtags", Toast.LENGTH_SHORT).show();
                             myTags.clear();
                             flexboxLayout.removeAllViews();
                         }
@@ -275,7 +315,7 @@ public class RandomChat extends Fragment {
             }
         });
 
-        SharedPreferences prefs = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
         String filePath = prefs.getString("profile_picture_path", null);
         if (filePath != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
@@ -311,7 +351,8 @@ public class RandomChat extends Fragment {
                 if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     String text = enter_tags.getText().toString().trim();
                     if (!text.isEmpty()) {
-                        addTextToFlowLayout("#"+text,flexboxLayout);
+                        addTextToFlowLayout("#" + text, flexboxLayout);
+
                         enter_tags.setText("");
                         myTags.add(text);
                     }
@@ -322,79 +363,98 @@ public class RandomChat extends Fragment {
         });
 
 
-
         textView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text=textView1.getText().toString();
+                String text = textView1.getText().toString();
                 myTags.add(text.substring(1));
-                addTextToFlowLayout(text,flexboxLayout);
+                addTextToFlowLayout(text, flexboxLayout);
             }
         });
         textView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text=textView2.getText().toString();
+                String text = textView2.getText().toString();
                 myTags.add(text.substring(1));
-                addTextToFlowLayout(text,flexboxLayout);
+                addTextToFlowLayout(text, flexboxLayout);
             }
         });
         textView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text=textView3.getText().toString();
+                String text = textView3.getText().toString();
                 myTags.add(text.substring(1));
-                addTextToFlowLayout(text,flexboxLayout);
+                addTextToFlowLayout(text, flexboxLayout);
             }
         });
         textView4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text=textView4.getText().toString();
+                String text = textView4.getText().toString();
                 myTags.add(text.substring(1));
-                addTextToFlowLayout(text,flexboxLayout);
+                addTextToFlowLayout(text, flexboxLayout);
             }
         });
         textView5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text=textView5.getText().toString();
+                String text = textView5.getText().toString();
                 myTags.add(text.substring(1));
-                addTextToFlowLayout(text,flexboxLayout);
+                addTextToFlowLayout(text, flexboxLayout);
             }
         });
         textView6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text=textView6.getText().toString();
+                String text = textView6.getText().toString();
                 myTags.add(text.substring(1));
-                addTextToFlowLayout(text,flexboxLayout);
+                addTextToFlowLayout(text, flexboxLayout);
             }
         });
         textView7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text=textView7.getText().toString();
+                String text = textView7.getText().toString();
                 myTags.add(text.substring(1));
-                addTextToFlowLayout(text,flexboxLayout);
+                addTextToFlowLayout(text, flexboxLayout);
             }
         });
 
 
-
-                return view;
+        return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        new SimpleTooltip.Builder(requireContext())
-                .anchorView(search)
-                .text("Start matching!")
-                .gravity(Gravity.BOTTOM)
-                .animated(true)
-                .transparentOverlay(false)
-                .build()
-                .show();
+        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(2);
+        databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue("");
     }
+    public void openCenteredDialog() {
+        // Create a Dialog instance
+        Dialog dialog = new Dialog(getContext());
+
+        // Set the layout for the Dialog (your custom layout)
+        dialog.setContentView(R.layout.matching_anim_window);
+
+        // Set the corner radius for the Dialog
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+
+        // Optionally set other properties for the Dialog, e.g., size, title, etc.
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.setTitle("Your Dialog Title");
+        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(0);
+        text=dialog.findViewById(R.id.textView);
+        TextView stop=dialog.findViewById(R.id.Stop);
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(2);
+                dialog.dismiss();
+            }
+        });
+        // Show the Dialog
+        dialog.show();
+    }
+
 }

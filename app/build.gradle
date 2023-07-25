@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.gossip"
         minSdk 23
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -33,7 +33,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-messaging:23.1.2'
+    implementation 'com.google.firebase:firebase-messaging:23.2.0'
     implementation 'com.google.firebase:firebase-database:20.1.0'
     implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
     testImplementation 'junit:junit:4.13.2'
@@ -47,7 +47,7 @@ dependencies {
 
 
     // authentication
-    implementation platform('com.google.firebase:firebase-bom:31.1.1')
+//    implementation platform('com.google.firebase:firebase-bom:31.1.1')
     implementation 'com.google.firebase:firebase-auth'
 
     // Card View v7
@@ -101,10 +101,10 @@ dependencies {
 //    }
 
 //    implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.9'
-    implementation ('com.github.ibrahimsn98:SmoothBottomBar:1.7.9'){
-        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel'
-        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
-    }
+//    implementation ('com.github.ibrahimsn98:SmoothBottomBar:1.7.9'){
+//        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel'
+//        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
+//    }
 
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
@@ -113,5 +113,18 @@ dependencies {
 
     //lottie anim
     implementation 'com.airbnb.android:lottie:4.2.0'
+
+    //bottom nav
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    //pin view OTP
+    implementation 'io.github.chaosleung:pinview:1.4.4'
+
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+
+
 
 }

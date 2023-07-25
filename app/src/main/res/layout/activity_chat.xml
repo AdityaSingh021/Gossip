@@ -4,20 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/blank_frag_bg"
+    android:background="@drawable/blank_frag_bg_image"
     tools:context=".chat.Chat">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
         <RelativeLayout
-            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:background="@drawable/user_info_bg_char_adapter"
             android:id="@+id/topBar"
@@ -31,13 +22,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profilePic"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/man_3"></ImageView>
+                    android:background="@drawable/man_3"></de.hdodenhof.circleimageview.CircleImageView>
 
 
                 <TextView
@@ -87,30 +79,32 @@
 
         </RelativeLayout>
 
-        <ImageView
-            android:padding="10dp"
-            android:layout_marginStart="2dp"
-            android:layout_width="100dp"
-            android:layout_height="65dp"
-            android:background="@drawable/user_info_bg_char_adapter"
-            android:layout_weight="1"
-            android:src="@drawable/camera_icon"/>
-    </LinearLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#30FFFFFF"
+        android:layout_below="@+id/topBar"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chattingRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomBar"
-        android:layout_marginTop="70dp" />
+        android:layout_below="@+id/topBar"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#30FFFFFF"
+        android:layout_below="@id/chattingRecyclerView"/>
 
     <RelativeLayout
+        android:background="@drawable/bottom_nav_shade"
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:paddingVertical="10dp"
         android:orientation="horizontal">
 
         <EditText

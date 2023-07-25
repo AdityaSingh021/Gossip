@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +23,9 @@ import androidx.viewpager.widget.PagerAdapter;
 public class viewPager extends PagerAdapter {
     Context context;
     int images[]={
-            R.drawable.group_1
-            ,R.drawable.message,
-            R.drawable.anonymous
+            R.drawable.onboarding_1
+            ,R.drawable.onboarding_2,
+            R.drawable.onboarding_3
     };
     int headings[]={
             R.string.heading_one,
@@ -47,7 +48,7 @@ public class viewPager extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view==(LinearLayout) object;
+        return view==(RelativeLayout) object;
     }
 
     @NonNull
@@ -68,6 +69,6 @@ public class viewPager extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-         container.removeView((LinearLayout)object);
+         container.removeView((RelativeLayout)object);
     }
 }

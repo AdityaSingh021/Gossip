@@ -4,10 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/blank_frag_bg"
+    android:background="@drawable/blank_frag_bg_image"
     tools:context=".RandomChat">
 
     <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +39,8 @@
                     android:layout_marginBottom="10dp"
                     android:textColor="@color/white"/>
 
-                <TextView
+                <EditText
+                    android:background="@android:color/transparent"
                     android:fontFamily="@font/open_sans"
                     android:id="@+id/user_name"
                     android:layout_width="match_parent"
@@ -124,17 +129,50 @@
 
 
         </LinearLayout>
+
+
         <TextView
-            android:layout_gravity="center"
+            android:id="@+id/MyHashTags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Popular HashTags"
-            android:textColor="@color/white"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/open_sans"
-            android:textStyle="bold"
-            android:textSize="16dp"/>
+            android:text="My HashTags"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <View
+            android:id="@+id/view1"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#cb7d67"
+            android:layout_marginHorizontal="50dp"/>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_marginHorizontal="20dp"
+                android:id="@+id/flexboxLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap"
+                app:alignItems="flex_start"
+                app:justifyContent="flex_start">
+            </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/open_sans"
+            android:text="Popular HashTags"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
         <View
             android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"
@@ -146,7 +184,7 @@
         <RelativeLayout
             android:id="@+id/PopularHashTags"
             android:layout_width="match_parent"
-            android:layout_height="60dp">
+            android:layout_height="wrap_content">
 
             <com.google.android.flexbox.FlexboxLayout
 
@@ -280,40 +318,7 @@
         </RelativeLayout>
 
 
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My HashTags"
-            android:textColor="@color/white"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@font/open_sans"
-            android:textStyle="bold"
-            android:textSize="16dp"/>
-        <View
-            android:layout_marginBottom="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="#cb7d67"
-            android:layout_marginHorizontal="50dp"/>
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:layout_marginHorizontal="20dp"
-                android:id="@+id/flexboxLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:flexWrap="wrap"
-                app:alignItems="flex_start"
-                app:justifyContent="flex_start">
-            </com.google.android.flexbox.FlexboxLayout>
-
-
-        </ScrollView>
+<!--        </ScrollView>-->
 
 
 
@@ -398,6 +403,7 @@
 
 
     </LinearLayout>
+    </ScrollView>
 
 
 </FrameLayout>

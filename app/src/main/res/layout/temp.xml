@@ -1,48 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<!--<RelativeLayout-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="60dp"-->
-<!--    android:background="@drawable/semi_circle"-->
-<!--    tools:ignore="MissingConstraints">-->
-<!--    <ImageView-->
-<!--        android:layout_width="25dp"-->
-<!--        android:layout_height="25dp"-->
-<!--        android:src="@drawable/options"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:layout_marginStart="10dp"/>-->
-<!--    <LinearLayout-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="60dp"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:orientation="vertical">-->
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Aditya Singh"-->
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/bottom_nav_shade"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"/>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:labelVisibilityMode="labeled"
+        app:itemIconSize="25dp"
+        android:id="@+id/bottom_nav"
+        app:itemIconTint="@color/bottom_nav_icon_color"
+        app:itemTextColor="@color/bottom_nav_icon_color"
+        app:menu="@menu/bottom_nav_menu"
+        android:background="@android:color/transparent"/>
 
-<!--            android:textColor="#FFFFFF"-->
-<!--            android:textSize="15dp"/>-->
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Online"-->
-<!--            android:textColor="#39FF13"-->
-<!--            android:textSize="13dp"/>-->
-<!--    </LinearLayout>-->
-
-<!--    <ImageView-->
-<!--        android:layout_width="40dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:src="@drawable/man_2"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:layout_centerVertical="true"/>-->
-
-<!--        -->
-<!--</RelativeLayout>-->
-</LinearLayout>
+</RelativeLayout>

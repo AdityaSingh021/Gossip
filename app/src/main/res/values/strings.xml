@@ -3,14 +3,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     //Headings
-    <string name="heading_one">Gossip - Connect, Chat, and Explore the World!</string>
+    <string name="heading_one">Connect, Chat, and Explore the World!</string>
     <string name="heading_two">Explore random chat feature to meet new people.</string>
     <string name="heading_three">Chat without revealing your Identity</string>
     <string name="heading_fourth">Pay Anywhere</string>
 
     //Description
-    <string name="desc_one">Chat with random people around the world for free.</string>
+    <string name="desc_one">Enjoy the joy of interactions and embrace the power of conversations with Wired.</string>
     <string name="desc_two">Join chat rooms based on your interests and engage in lively discussions.</string>
-    <string name="desc_three">Experience anonymous chatting to protect your privacy.</string>
+    <string name="desc_three">Wired ensures end-to-end encryption for all your messages. Feel confident and protected while expressing yourself freely.</string>
     <string name="desc_fourth">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
 </resources>

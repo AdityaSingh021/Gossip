@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
+
+import com.example.gossip.chat.Chat;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -15,17 +18,31 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Start the main activity or the next activity
-                if (!MemoryData.getData(getApplicationContext()).isEmpty()) {
-                    Intent i = new Intent(getApplicationContext(), BottomNavigationPage.class);
-                    Bundle bundle = new Bundle();
-                    startActivity(i);
-                    finish();
-                }
-                else{
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                 Start the main activity or the next activity
+                if(getIntent().getExtras()!=null) {
+                    //from notification
+                    String userMobile = getIntent().getExtras().getString("Mobile");
+                    String Name = getIntent().getExtras().getString("Name");
+                    String ChatKey = getIntent().getExtras().getString("ChatKey");
+                    Intent intent = new Intent(getApplicationContext(), Chat.class);
+                    intent.putExtra("mobile", userMobile);
+                    intent.putExtra("name", Name);
+                    intent.putExtra("chat_key", ChatKey);
                     startActivity(intent);
+                }else{
+                    if (!MemoryData.getData(getApplicationContext()).isEmpty()) {
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                        BlankFragment blankFragment=new BlankFragment();
+                        Bundle bundle = new Bundle();
+                        startActivity(i);
+                        finish();
+                    }
+                    else{
+                        Intent intent = new Intent(getApplicationContext(),Start_Screen_1.class);
+                        startActivity(intent);
+                    }
                 }
+
                 finish(); // Close the splash screen activity
             }
         }, 1000);

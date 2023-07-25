@@ -36,9 +36,12 @@ public final class MemoryData {
         }
     public static void saveLastMsgTs (String data, String chatId,Context context) {
         try {
-            FileOutputStream fileOutputStream = context.openFileOutput (chatId+".txt", Context.MODE_PRIVATE);
-            fileOutputStream.write (data.getBytes());
-            fileOutputStream.close();
+            if(context!=null){
+                FileOutputStream fileOutputStream = context.openFileOutput (chatId+".txt", Context.MODE_PRIVATE);
+                fileOutputStream.write (data.getBytes());
+                fileOutputStream.close();
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,10 +63,13 @@ public final class MemoryData {
 
 
     public static void createProfilePicturesFolder(Context context) {
-        File folder = new File(context.getFilesDir(), "ProfilePicturesFolder");
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
+        try{
+            File folder = new File(context.getFilesDir() , "ProfilePicturesFolder");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+        }catch (Exception e){}
+
     }
 
     public static void saveProfilePicture(Bitmap bitmap, String Number, Context context) {

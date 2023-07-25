@@ -145,6 +145,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
                 intent.putExtra("mobile",list2.getMobile());
                 intent.putExtra("name",list2.getName());
                 intent.putExtra("chat_key",list2.getChatKey());
+//                intent.putExtra("profilePic",bitmap);
 //                intent.putExtra("profilePic",list2.getProfilePic());
 
                 context.startActivity(intent);

@@ -93,103 +93,103 @@ public class Login extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    public void uploadtofirebase(){
-//        ProgressDialog dialog=new ProgressDialog(this);
-//        dialog.setTitle("File Uploader");
-//        dialog.show();
-        FirebaseStorage storage=FirebaseStorage.getInstance();
-        StorageReference uploader=storage.getReference().child(edtPhone.getText().toString());
-        if(filepath!=null){
-            uploader.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                if (!Login.this.isFinishing() && dialog != null) {
-//                dialog.dismiss();
-//                }
-                    uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            s=edtPhone.getText().toString();
-                            n=Name.getText().toString();
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            if(!snapshot.child("Users").hasChild(s)){
-//                                Log.i("justCheck2","yess");
-                                    databaseReference.child("Users").child(s).child("Name").setValue(n);
-                                    databaseReference.child(s).child("Status").setValue(0);
-//                                if(profilePicLink==null) {
-//                                    databaseReference.child(s).child("profilePic").setValue("");
-//                                    Toast.makeText(getApplicationContext(),"Empty",Toast.LENGTH_SHORT).show();
+//    public void uploadtofirebase(){
+////        ProgressDialog dialog=new ProgressDialog(this);
+////        dialog.setTitle("File Uploader");
+////        dialog.show();
+//        FirebaseStorage storage=FirebaseStorage.getInstance();
+//        StorageReference uploader=storage.getReference().child(edtPhone.getText().toString());
+//        if(filepath!=null){
+//            uploader.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+////                if (!Login.this.isFinishing() && dialog != null) {
+////                dialog.dismiss();
+////                }
+//                    uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            s=edtPhone.getText().toString();
+//                            n=Name.getText().toString();
+//                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+////                            if(!snapshot.child("Users").hasChild(s)){
+////                                Log.i("justCheck2","yess");
+//                                    databaseReference.child("Users").child(s).child("Name").setValue(n);
+//                                    databaseReference.child(s).child("Status").setValue(0);
+////                                if(profilePicLink==null) {
+////                                    databaseReference.child(s).child("profilePic").setValue("");
+////                                    Toast.makeText(getApplicationContext(),"Empty",Toast.LENGTH_SHORT).show();
+////                                }
+//                                    databaseReference.child(s).child("profilePic").setValue(uri.toString());
+//                                    Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
+////                            }
+////                            Toast.makeText(getApplicationContext(),"users m nhi h",Toast.LENGTH_SHORT).show();
+////                            Toast.makeText(getApplicationContext(),"bhar",Toast.LENGTH_SHORT).show();
 //                                }
-                                    databaseReference.child(s).child("profilePic").setValue(uri.toString());
-                                    Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
-//                            }
-//                            Toast.makeText(getApplicationContext(),"users m nhi h",Toast.LENGTH_SHORT).show();
-//                            Toast.makeText(getApplicationContext(),"bhar",Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
-                                }
-                            });
-//                        profilePicLink=uri.toString();
-//                        Toast.makeText(getApplicationContext(),profilePicLink,Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-                    Toast.makeText(getApplicationContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-//                float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
-//                dialog.setMessage("Uploaded :"+(int)percent+" %");
-                }
-            });
-        }
-    }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError error) {
+//                                    Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+////                        profilePicLink=uri.toString();
+////                        Toast.makeText(getApplicationContext(),profilePicLink,Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    });
+//                    Toast.makeText(getApplicationContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
+//                }
+//            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+////                float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
+////                dialog.setMessage("Uploaded :"+(int)percent+" %");
+//                }
+//            });
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         edtPhone = findViewById(R.id.idEdtPhoneNumber);
-        edtOTP = findViewById(R.id.idEdtOtp);
-        Name=findViewById(R.id.name);
-        verifyOTPBtn = findViewById(R.id.idBtnVerify);
+//        edtOTP = findViewById(R.id.idEdtOtp);
+//        Name=findViewById(R.id.name);
+//        verifyOTPBtn = findViewById(R.id.idBtnVerify);
         generateOTPBtn = findViewById(R.id.idBtnGetOtp);
-        verifyOTPBtn.setVisibility(View.INVISIBLE);
-        edtOTP.setVisibility(View.INVISIBLE);
+//        verifyOTPBtn.setVisibility(View.INVISIBLE);
+//        edtOTP.setVisibility(View.INVISIBLE);
         mAuth=FirebaseAuth.getInstance();
-        take_image=findViewById(R.id.profile_image);
-        take_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Dexter.withContext(getApplicationContext())
-                        .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                Intent i=new Intent(Intent.ACTION_PICK);
-                                i.setType("image/*");
-                                startActivityForResult(Intent.createChooser(i,"Please select Image"),1);
-
-                            }
-
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-
-                            }
-
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                                permissionToken.continuePermissionRequest();
-                            }
-                        }).check();
-            }
-        });
+//        take_image=findViewById(R.id.profile_image);
+//        take_image.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Dexter.withContext(getApplicationContext())
+//                        .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                        .withListener(new PermissionListener() {
+//                            @Override
+//                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+//                                Intent i=new Intent(Intent.ACTION_PICK);
+//                                i.setType("image/*");
+//                                startActivityForResult(Intent.createChooser(i,"Please select Image"),1);
+//
+//                            }
+//
+//                            @Override
+//                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+//                                permissionToken.continuePermissionRequest();
+//                            }
+//                        }).check();
+//            }
+//        });
 
 
 
@@ -224,8 +224,11 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Please Enter a valid Phone Number", Toast.LENGTH_SHORT).show();
                     } else {
                         String phone = "+91" + edtPhone.getText().toString();
-                        Toast.makeText(getApplicationContext(), "Sending Request", Toast.LENGTH_SHORT).show();
-                        sendVerificationCode(phone);
+                        Toast.makeText(getApplicationContext(), "Sending OTP", Toast.LENGTH_SHORT).show();
+//                        sendVerificationCode(phone);
+                        Intent i=new Intent(getApplicationContext(),OOtpVerification.class);
+                        i.putExtra("Mobile",edtPhone.getText().toString());
+                        startActivity(i);
                     }
 
 
@@ -233,24 +236,24 @@ public class Login extends AppCompatActivity {
 
             }
         });
-        verifyOTPBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadtofirebase();
-                // validating if the OTP text field is empty or not.
-                if (TextUtils.isEmpty(edtOTP.getText().toString())) {
-                    // if the OTP text field is empty display
-                    // a message to user to enter OTP
-                    Toast.makeText(Login.this, "Please enter OTP", Toast.LENGTH_SHORT).show();
-                } else {
-//                    Log.i("justCheck1","yess");
-//                    Toast.makeText(getApplicationContext(),"1111111",Toast.LENGTH_SHORT).show();
-                    // if OTP field is not empty calling
-                    // method to verify the OTP.
-                    verifyCode(edtOTP.getText().toString());
-                }
-            }
-        });
+//        verifyOTPBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                uploadtofirebase();
+//                // validating if the OTP text field is empty or not.
+//                if (TextUtils.isEmpty(edtOTP.getText().toString())) {
+//                    // if the OTP text field is empty display
+//                    // a message to user to enter OTP
+//                    Toast.makeText(Login.this, "Please enter OTP", Toast.LENGTH_SHORT).show();
+//                } else {
+////                    Log.i("justCheck1","yess");
+////                    Toast.makeText(getApplicationContext(),"1111111",Toast.LENGTH_SHORT).show();
+//                    // if OTP field is not empty calling
+//                    // method to verify the OTP.
+//                    verifyCode(edtOTP.getText().toString());
+//                }
+//            }
+//        });
     }
 
 
@@ -271,9 +274,9 @@ public class Login extends AppCompatActivity {
                         .setCallbacks(mCallBack)           // OnVerificationStateChangedCallbacks
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
-        verifyOTPBtn.setVisibility(View.VISIBLE);
-        edtOTP.setVisibility(View.VISIBLE);
-        generateOTPBtn.setVisibility(View.INVISIBLE);
+//        verifyOTPBtn.setVisibility(View.VISIBLE);
+//        edtOTP.setVisibility(View.VISIBLE);
+//        generateOTPBtn.setVisibility(View.INVISIBLE);
 
     }
 
@@ -325,6 +328,7 @@ public class Login extends AppCompatActivity {
                             SharedPreferences sharedPreferences = getSharedPreferences("MyAuthenticationId",MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
                             myEdit.putString("AuthId", AuthenticationId);
+                            myEdit.putString("name","User@"+AuthenticationId.substring(12,14));
                             myEdit.apply();
 
 
@@ -338,7 +342,7 @@ public class Login extends AppCompatActivity {
                             MemoryData.saveName(Name.getText().toString(),Login.this);
                             Intent i = new Intent(Login.this, ContactChats.class);
                             i.putExtra("mobile",s);
-                            i.putExtra("name",n);
+//                            i.putExtra("name",);
                             startActivity(i);
                             finish();
                         } else {
