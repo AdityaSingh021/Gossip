@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:padding="10sp"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/stop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Stop"
+        android:background="@drawable/transparent_rect"
+        android:padding="10sp"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/skip"
+        android:layout_marginStart="10sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Skip"
+        android:background="@drawable/theme_green_rect"
+        android:padding="10sp"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+
+</LinearLayout>

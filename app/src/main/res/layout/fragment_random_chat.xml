@@ -9,6 +9,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
+        android:scrollbarSize="0dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp">
@@ -130,6 +131,15 @@
 
         </LinearLayout>
 
+        <com.nitish.typewriterview.TypeWriterView
+            android:id="@+id/typeWriterView"
+            android:layout_width="match_parent"
+            android:fontFamily="@font/bitter"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20sp"
+            android:gravity="center"
+            android:textColor="#90FFFFFF" />
+
 
         <TextView
             android:id="@+id/MyHashTags"
@@ -160,6 +170,16 @@
                 app:alignItems="flex_start"
                 app:justifyContent="flex_start">
             </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:layout_marginTop="10sp"
+            android:textSize="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Note: long press the hashtags to remove them"
+            android:textColor="#80FFFFFF"
+            android:id="@+id/hint"/>
 
         <TextView
             android:layout_width="wrap_content"

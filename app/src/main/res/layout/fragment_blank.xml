@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".BlankFragment">
         <LinearLayout
@@ -30,40 +31,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
-                        <RelativeLayout
+                        <androidx.appcompat.widget.SearchView
+                            android:id="@+id/searchView"
+                            app:iconifiedByDefault="false"
+                            app:searchIcon="@drawable/ic_baseline_search_24"
                             android:layout_gravity="bottom"
                             android:layout_width="0dp"
                             android:layout_marginHorizontal="20dp"
-                            android:layout_height="wrap_content"
                             android:background="@drawable/semi_circle"
-                                android:layout_weight="1">
+                            app:queryBackground="@android:color/transparent"
+                            android:layout_height="35dp"
 
-                                <ImageView
-                                    android:id="@+id/search"
-                                    android:layout_centerVertical="true"
-                                    android:layout_marginStart="20dp"
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:src="@drawable/ic_baseline_search_24"/>
-
-                            <EditText
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginBottom="-3dp"
-                                android:layout_toEndOf="@+id/search"
-                                android:backgroundTint="@android:color/transparent"
-                                android:fontFamily="@font/open_sans"
-                                android:gravity="bottom"
-                                android:hint="Search contacts"
-                                android:maxLines="1"
-                                android:textColorHint="@color/white"
-                                android:textSize="15dp" />
-
-
-                        </RelativeLayout>
+                            android:theme="@style/SearchViewStyle"
+                            app:queryHint="Search contacts"
+                            android:layout_weight="1">
+                        </androidx.appcompat.widget.SearchView>
 
 
                         <ImageView
@@ -188,6 +170,10 @@
                 </LinearLayout>
 
 
+            <HorizontalScrollView
+                android:scrollbars="none"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <LinearLayout
                     android:layout_marginTop="10dp"
                     android:paddingVertical="5dp"
@@ -196,49 +182,108 @@
 
                     android:orientation="horizontal"
                     >
-<!--                        <RelativeLayout-->
-<!--                            android:layout_width=""-->
-<!--                            android:layout_height=""-->
-                        <LinearLayout
-                            android:layout_marginStart="20dp"
-                            android:layout_width="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_height="wrap_content">
-                            <RelativeLayout
-                                android:layout_width="65dp"
-                                android:layout_height="60dp"
-                                >
+                    <!--                        <RelativeLayout-->
+                    <!--                            android:layout_width=""-->
+                    <!--                            android:layout_height=""-->
+                    <LinearLayout
+                        android:layout_marginStart="20dp"
+                        android:layout_width="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+                        <RelativeLayout
+                            android:layout_width="85dp"
+                            android:layout_height="85dp"
+                            >
+                            <ImageView
+                                android:layout_centerInParent="true"
+                                android:id="@+id/StatusState"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:src="@drawable/status_cicrcle" />
 
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    android:id="@+id/my_story"
-                                    android:layout_width="60dp"
-                                    android:layout_height="60dp"
-                                    android:src="@drawable/default_user" />
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/my_story"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/default_user" />
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentBottom="true"
+                                android:src="@drawable/add_story_backg" />
 
-                                <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_alignParentBottom="true"
-                                    android:src="@drawable/add_icon" />
+                            <ImageView
+                                android:id="@+id/addStatus"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentBottom="true"
+                                android:src="@drawable/add_icon" />
 
-                            </RelativeLayout>
+
+                        </RelativeLayout>
 
 
-                                <TextView
-                                    android:maxLines="1"
-                                    android:fontFamily="@font/open_sans"
-                                    android:layout_width="55dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:text="Your story"
-                                    android:gravity="center"
-                                    android:textSize="10dp"
-                                    android:textColor="@color/white" />
-                        </LinearLayout>
+                        <TextView
+                            android:layout_gravity="center"
+                            android:maxLines="1"
+                            android:fontFamily="@font/open_sans"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Your story"
+                            android:gravity="center"
+                            android:textSize="12dp"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/shimmer">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+
+                                <include layout="@layout/shimmer_layout">
+
+                                </include>
+                                <include layout="@layout/shimmer_layout">
+
+                                </include>
+                                <include layout="@layout/shimmer_layout">
+
+                                </include>
+                                <include layout="@layout/shimmer_layout">
+
+                                </include>
+
+
+
+                            </LinearLayout>
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                    </RelativeLayout>
+
 
                 </LinearLayout>
+
+            </HorizontalScrollView>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
@@ -248,7 +293,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Messages are end-to-end encrypted to ensure the data confidentiality. people outside of your chats cannot access, modify and delete your conversations."
+                    android:text="At our core, we value your privacy above all else. Your personal data remains strictly confidential and is never shared with any third parties, ensuring a secure and trustworthy experience for you."
                     android:textColor="#cb7d67"
                     android:layout_marginHorizontal="20dp"
                     android:textSize="15dp"/>

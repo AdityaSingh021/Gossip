@@ -7,8 +7,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -38,15 +42,23 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class OOtpVerification extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String AuthenticationId;
     private ImageView take_image;
+    private boolean resend=false;
     private EditText edtOTP;
     private TextView generateOTPBtn;
     private EditText Name;
+    private TextView textView1;
+    private ImageView editPhoneNumber;
+    private TextView timerTextView;
     private String edtPhone;
     private String s;
     private String n;
@@ -58,6 +70,7 @@ public class OOtpVerification extends AppCompatActivity {
 
 //    private String edtPhone="";
     private TextView verifyOTPBtn;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +80,24 @@ public class OOtpVerification extends AppCompatActivity {
         PinView pinView=findViewById(R.id.pinview);
         edtPhone=String.valueOf(getIntent().getStringExtra("Mobile"));
         Toast.makeText(getApplicationContext(), "Sending OTP", Toast.LENGTH_SHORT).show();
+        timerTextView=findViewById(R.id.textView);
+        editPhoneNumber=findViewById(R.id.editPhone);
+        textView1=findViewById(R.id.textView1);
+        textView1.setText("sent on +91"+edtPhone);
+        startTimer();
+        timerTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(resend) sendVerificationCode("+91"+edtPhone);
+            }
+        });
         sendVerificationCode("+91"+edtPhone);
+        editPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         verifyOTPBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +106,6 @@ public class OOtpVerification extends AppCompatActivity {
                 if (TextUtils.isEmpty(pinView.getText().toString())) {
                     // if the OTP text field is empty display
                     // a message to user to enter OTP
-                    Toast.makeText(getApplicationContext(), "Please enter OTP", Toast.LENGTH_SHORT).show();
                 } else {
 //                    Log.i("justCheck1","yess");
 //                    Toast.makeText(getApplicationContext(),"1111111",Toast.LENGTH_SHORT).show();
@@ -161,7 +190,52 @@ public class OOtpVerification extends AppCompatActivity {
                             myEdit.putString("AuthId", AuthenticationId);
                             int len=AuthenticationId.length();
                             Log.i("MyAuthId",AuthenticationId);
-                            myEdit.putString("name","User@"+AuthenticationId.substring(len-5,len));
+                            databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.child(edtPhone).child("Name").exists()){
+                                        String myName=snapshot.child(edtPhone).child("Name").getValue(String.class);
+                                        Container.setMyName(myName);
+                                        myEdit.putString("name",myName);
+
+
+
+                                        try{
+                                            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                                            StorageReference storageReference = firebaseStorage.getReference();
+                                            StorageReference imgRef = storageReference.child("ProfilePictures").child(edtPhone);
+
+                                            imgRef.getBytes(5024 * 5024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                @Override
+                                                public void onSuccess(byte[] bytes) {
+                                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                                                temp = bitmap;
+                                                    if (bitmap != null)
+                                                        MemoryData.saveProfilePicture(bitmap, edtPhone, getApplicationContext());
+
+
+                                                }
+                                            }).addOnFailureListener(exception -> {
+                                            });
+                                        }catch (Exception e){}
+
+                                        myEdit.apply();
+                                    }else{
+                                        String UserId="User@"+AuthenticationId.substring(len-5,len);
+                                        Container.setMyName(UserId);
+                                        databaseReference.child("Users").child(edtPhone).child("Name").setValue(UserId);
+                                        myEdit.putString("name",UserId);
+                                        myEdit.apply();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
                             myEdit.apply();
 
 
@@ -174,6 +248,7 @@ public class OOtpVerification extends AppCompatActivity {
 //                            saving name to Memory
 //                            Toast.makeText(getApplicationContext(),Name.getText().toString(),Toast.LENGTH_SHORT).show();
 //                            MemoryData.saveName(Name.getText().toString(),getApplicationContext());
+//                            databaseReference.child("Users").child(edtPhone).child()
                             Intent i = new Intent(getApplicationContext(), MainActivity.class);
                             i.putExtra("mobile",edtPhone.toString());
 //                            i.putExtra("name","Aditya");
@@ -217,10 +292,8 @@ public class OOtpVerification extends AppCompatActivity {
 //                                    Toast.makeText(getApplicationContext(),"Empty",Toast.LENGTH_SHORT).show();
 //                                }
                                     databaseReference.child(s).child("profilePic").setValue(uri.toString());
-                                    Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
 //                            }
-//                            Toast.makeText(getApplicationContext(),"users m nhi h",Toast.LENGTH_SHORT).show();
-//                            Toast.makeText(getApplicationContext(),"bhar",Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
@@ -233,7 +306,6 @@ public class OOtpVerification extends AppCompatActivity {
 
                         }
                     });
-                    Toast.makeText(getApplicationContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -243,5 +315,30 @@ public class OOtpVerification extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    //------------- Resend Otp Timer ------------------------------->
+
+    private void startTimer() {
+        // Initialize the countdown timer
+        CountDownTimer countDownTimer = new CountDownTimer(20000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Update the timer TextView with the remaining time
+                long secondsRemaining = millisUntilFinished / 1000;
+                timerTextView.setText("Resend OTP in " + secondsRemaining + " seconds");
+            }
+
+            @Override
+            public void onFinish() {
+                // Timer finished, enable the "Resend OTP" button
+                timerTextView.setText("Resend OTP"); // Clear the timer text
+                timerTextView.setTextColor(Color.parseColor("#00547e"));
+                resend=true;
+            }
+        };
+
+        // Start the timer
+        countDownTimer.start();
     }
 }

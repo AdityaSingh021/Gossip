@@ -40,9 +40,12 @@ public class NotificationFragment extends Fragment {
 
 
     private List<FriendRequestList> friendRequests;
+    private List<FriendRequestList> Suggestions;
     private RecyclerView recyclerView;
+    private RecyclerView SuggestionRecyclerView;
     private NotificationAdapter adapter;
     private LinearLayout linearLayout;
+    TextView suggestionsTitle;
 
     private LottieAnimationView lottieAnimationView;
     private TextView textView;
@@ -92,19 +95,23 @@ public class NotificationFragment extends Fragment {
 //        animationView.setAnimation("tick.json");
 //        animationView.playAnimation();
         recyclerView = v.findViewById(R.id.recyclerView);
+        SuggestionRecyclerView=v.findViewById(R.id.SuggestionRecyclerView);
+        Suggestions=new ArrayList<>();
         friendRequests = new ArrayList<>();
         linearLayout=v.findViewById(R.id.linearLayout);
+        suggestionsTitle=v.findViewById(R.id.Suggestions);
 //        Toast.makeText(getContext(),MainActivity.mobile,Toast.LENGTH_SHORT).show();
         databaseReference.child(MainActivity.mobile).child("FrndReq").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 friendRequests.clear();
                 for(DataSnapshot snapshot1:snapshot.getChildren()){
-                    friendRequests.add(new FriendRequestList(snapshot1.child("Name").getValue(String.class),snapshot1.child("profilePic").getValue(String.class),snapshot1.getKey()));
+                    friendRequests.add(new FriendRequestList(snapshot1.child("Name").getValue(String.class),snapshot1.child("profilePic").getValue(String.class),snapshot1.getKey(),false));
                 }
                 adapter = new NotificationAdapter(friendRequests,getContext());
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 recyclerView.setAdapter(adapter);
+                Container.setSuggestionOrRequest(false);
                 if(friendRequests.isEmpty()) linearLayout.setVisibility(View.VISIBLE);
                 else linearLayout.setVisibility(View.GONE);
             }
@@ -118,8 +125,45 @@ public class NotificationFragment extends Fragment {
 
 
 
+
+
 //        friendRequests.add(new FriendRequestList(R.drawable.profile_picture_1));
 //        friendRequests.add(new FriendRequestList(R.drawable.profile_picture_2));
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Suggestions.clear();
+                for(DataSnapshot snapshot1:snapshot.child("Users").getChildren()){
+
+                    if(!snapshot.child(MainActivity.mobile).child("contacts").child(snapshot1.getKey()).exists() && !snapshot1.getKey().equals(MainActivity.mobile) && !snapshot.child(snapshot1.getKey()).child("FrndReq").child(MainActivity.mobile).exists())
+//                    if(snapshot.child(snapshot1.getKey()).child("profilePic").exists()){
+                    {
+                        String profilePic = snapshot.child(snapshot1.getKey()).child("profilePic").getValue(String.class);
+//                    }
+                        Suggestions.add(new FriendRequestList(snapshot1.child("Name").getValue(String.class), profilePic, snapshot1.getKey(), true));
+                    }
+                }
+                if(Suggestions.isEmpty()) suggestionsTitle.setVisibility(View.INVISIBLE);
+                else suggestionsTitle.setVisibility(View.VISIBLE);
+                Container.setSuggestionOrRequest(true);
+                adapter = new NotificationAdapter(Suggestions,getContext());
+                SuggestionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                SuggestionRecyclerView.setAdapter(adapter);
+//                Container.setSuggestionOrRequest(false);
+//                if(friendRequests.isEmpty()) recyclerView.setVisibility(View.VISIBLE);
+//                else recyclerView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

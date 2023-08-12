@@ -15,10 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.cuberto.liquid_swipe.LiquidPager;
+//import com.cuberto.liquid_swipe.LiquidPager;
 
 public class Start_Screen_1 extends AppCompatActivity {
-    public static LiquidPager pager;
+//    public static LiquidPager pager;
 
     RelativeLayout mainRL;
     RelativeLayout getStarted;

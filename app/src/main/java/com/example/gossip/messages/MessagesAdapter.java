@@ -1,5 +1,6 @@
 package com.example.gossip.messages;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +22,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.example.gossip.HomeActivity;
+import com.example.gossip.MainActivity;
 import com.example.gossip.MemoryData;
 import com.example.gossip.R;
 import com.example.gossip.chat.Chat;
@@ -29,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
@@ -39,11 +44,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyViewHolder> {
     private List<MessagesList> messagesLists;
+    private List<MessagesList> filteredData;
     private  final Context context;
     DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");
     public MessagesAdapter(List<MessagesList> messagesLists, Context context) {
         this.messagesLists = messagesLists;
         this.context = context;
+        this.filteredData = new ArrayList<>(messagesLists);
     }
 
     @NonNull
@@ -56,7 +63,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
     public void onBindViewHolder(@NonNull MessagesAdapter.MyViewHolder holder, int position) {
         MessagesList list2=messagesLists.get(position);
         Bitmap bitmap=MemoryData.getProfilePicture(list2.getMobile(), context.getApplicationContext());
-////        Toast.makeText(context.getApplicationContext(),list2.getMobile()+" "+list2.getLastMessage(),Toast.LENGTH_SHORT).show();
 //        Log.i("myList",list2.getMobile()+" "+position+"   "+messagesLists.size());
 //        if(bitmap!=null){
 //            Log.i("myList","andar hu");
@@ -68,15 +74,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 //            Log.i("hdmi345",messagesLists.get(i).getMobile()+" "+messagesLists.get(i).getProfilePic()+" "+i);
 //        }
 
+
         if(bitmap!=null){
 //            Log.i("hdmi345",position+"  "+list2.getMobile()+"  "+list2.getLastNode());
             holder.profilePic.setImageBitmap(bitmap);
         }else{
             holder.profilePic.setImageResource(R.drawable.default_user);
         }
-        if(list2.getName().isEmpty()) list2.setName(list2.getMobile());
+        if(list2.getName()!=null && list2.getName().isEmpty()) list2.setName(list2.getMobile());
         holder.name.setText(list2.getName());
         holder.lastMessage.setText(list2.getlastMessage());
+
 
         long currentTimeStamp=System.currentTimeMillis();
         long lastNodeTime= list2.getLastNode();
@@ -117,7 +125,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
                         .setMessage("Are you sure you want to delete this chat?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                databaseReference.child(MemoryData.getData(context.getApplicationContext())).child("chat").child(list2.getChatKey()).removeValue();
+                                databaseReference.child(MemoryData.getData(context.getApplicationContext())).child("chat").child(list2.getChatKey()).child("messages").removeValue();
                                 // User clicked yes button
                             }
                         })
@@ -131,6 +139,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity.cond=false;
 //                list2.setUnseenMessages();
 //                updateData();
 
@@ -176,5 +185,23 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             time=itemView.findViewById(R.id.time);
 
         }
+    }
+
+    public void filter(String query,List<MessagesList> messagesLists) {
+        filteredData.clear();
+        if (TextUtils.isEmpty(query)) {
+            updateData(messagesLists);
+        } else {
+            query = query.toLowerCase().trim();
+            for (MessagesList item : messagesLists) {
+                // Convert the item name to lowercase and check if it contains the query
+//                Toast.makeText(context,,Toast.LENGTH_SHORT).show();
+                if (item.getName().toLowerCase().contains(query)) {
+                    filteredData.add(item);
+                }
+            }
+            updateData(filteredData);
+        }
+
     }
 }

@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -71,85 +72,29 @@ public class Login extends AppCompatActivity {
     private String profilePicLink;
     private DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(data.getData()!=null && requestCode==1 && resultCode==RESULT_OK){
-            filepath=data.getData();
-            try{
-                InputStream inputStream=getContentResolver().openInputStream(filepath);
-                bitmap= BitmapFactory.decodeStream(inputStream);
-                String fileName = "profile_picture.jpg";
-                take_image.setImageBitmap(bitmap);
-
-                SharedPreferences prefs = getApplicationContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("profile_picture_path", getApplicationContext().getFilesDir() + "/" + fileName);
-                editor.apply();
-//                Mydp=findViewById(R.id.Mydp);
-//                Mydp.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-//    public void uploadtofirebase(){
-////        ProgressDialog dialog=new ProgressDialog(this);
-////        dialog.setTitle("File Uploader");
-////        dialog.show();
-//        FirebaseStorage storage=FirebaseStorage.getInstance();
-//        StorageReference uploader=storage.getReference().child(edtPhone.getText().toString());
-//        if(filepath!=null){
-//            uploader.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-////                if (!Login.this.isFinishing() && dialog != null) {
-////                dialog.dismiss();
-////                }
-//                    uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                        @Override
-//                        public void onSuccess(Uri uri) {
-//                            s=edtPhone.getText().toString();
-//                            n=Name.getText().toString();
-//                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-////                            if(!snapshot.child("Users").hasChild(s)){
-////                                Log.i("justCheck2","yess");
-//                                    databaseReference.child("Users").child(s).child("Name").setValue(n);
-//                                    databaseReference.child(s).child("Status").setValue(0);
-////                                if(profilePicLink==null) {
-////                                    databaseReference.child(s).child("profilePic").setValue("");
-////                                    Toast.makeText(getApplicationContext(),"Empty",Toast.LENGTH_SHORT).show();
-////                                }
-//                                    databaseReference.child(s).child("profilePic").setValue(uri.toString());
-//                                    Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
-////                            }
-////                            Toast.makeText(getApplicationContext(),"users m nhi h",Toast.LENGTH_SHORT).show();
-////                            Toast.makeText(getApplicationContext(),"bhar",Toast.LENGTH_SHORT).show();
-//                                }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        if(data.getData()!=null && requestCode==1 && resultCode==RESULT_OK){
+//            filepath=data.getData();
+//            try{
+//                InputStream inputStream=getContentResolver().openInputStream(filepath);
+//                bitmap= BitmapFactory.decodeStream(inputStream);
+//                String fileName = "profile_picture.jpg";
+//                take_image.setImageBitmap(bitmap);
 //
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError error) {
-//                                    Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-////                        profilePicLink=uri.toString();
-////                        Toast.makeText(getApplicationContext(),profilePicLink,Toast.LENGTH_SHORT).show();
-//
-//                        }
-//                    });
-//                    Toast.makeText(getApplicationContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
-//                }
-//            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-////                float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
-////                dialog.setMessage("Uploaded :"+(int)percent+" %");
-//                }
-//            });
+//                SharedPreferences prefs = getApplicationContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = prefs.edit();
+//                editor.putString("profile_picture_path", getApplicationContext().getFilesDir() + "/" + fileName);
+//                editor.apply();
+////                Mydp=findViewById(R.id.Mydp);
+////                Mydp.setImageBitmap(bitmap);
+//            } catch (FileNotFoundException e) {
+////                e.printStackTrace();
+//            }
 //        }
+//        super.onActivityResult(requestCode, resultCode, data);
 //    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,33 +108,10 @@ public class Login extends AppCompatActivity {
 //        verifyOTPBtn.setVisibility(View.INVISIBLE);
 //        edtOTP.setVisibility(View.INVISIBLE);
         mAuth=FirebaseAuth.getInstance();
+//        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" +getPackageName()));
+//        getApplicationContext().startActivity(intent);
 //        take_image=findViewById(R.id.profile_image);
-//        take_image.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Dexter.withContext(getApplicationContext())
-//                        .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-//                        .withListener(new PermissionListener() {
-//                            @Override
-//                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-//                                Intent i=new Intent(Intent.ACTION_PICK);
-//                                i.setType("image/*");
-//                                startActivityForResult(Intent.createChooser(i,"Please select Image"),1);
-//
-//                            }
-//
-//                            @Override
-//                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-//                                permissionToken.continuePermissionRequest();
-//                            }
-//                        }).check();
-//            }
-//        });
+
 
 
 
@@ -224,7 +146,6 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Please Enter a valid Phone Number", Toast.LENGTH_SHORT).show();
                     } else {
                         String phone = "+91" + edtPhone.getText().toString();
-                        Toast.makeText(getApplicationContext(), "Sending OTP", Toast.LENGTH_SHORT).show();
 //                        sendVerificationCode(phone);
                         Intent i=new Intent(getApplicationContext(),OOtpVerification.class);
                         i.putExtra("Mobile",edtPhone.getText().toString());

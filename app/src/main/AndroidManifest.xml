@@ -5,8 +5,10 @@
     <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -28,11 +30,21 @@
         android:theme="@style/Theme.Gossip"
         tools:targetApi="31">
         <activity
+            android:name=".MatchingAnimation"
+            android:exported="false" />
+        <activity
+            android:name=".PrivacyPolicy"
+            android:exported="false" />
+        <activity
+            android:name=".Status.StatusGallery"
+            android:exported="false" />
+        <service android:name=".MyBackgroundService" />
+        <activity
             android:name=".AccountSettings"
             android:exported="false" />
         <activity
             android:name=".OOtpVerification"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <service
             android:name=".FCMnotificationServices"
@@ -58,7 +70,7 @@
         </activity>
         <activity
             android:name=".Start_Screen_1"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".HomeActivity"
             android:exported="false" />
@@ -85,7 +97,8 @@
             android:exported="true" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,13 +23,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.L;
 import com.example.gossip.BlankFragment;
 import com.example.gossip.ContactChats;
 import com.example.gossip.HomeActivity;
+import com.example.gossip.MainActivity;
 import com.example.gossip.MemoryData;
 import com.example.gossip.R;
+import com.example.gossip.ReportDialog;
+import com.example.gossip.StartRandomChat;
 import com.example.gossip.messages.MessagesAdapter;
 import com.example.gossip.messages.MessagesList;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,6 +68,12 @@ public class Chat extends AppCompatActivity {
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");
     //    public boolean check;
     private int check1;
+
+    ValueEventListener valLis1;
+    private ImageView back;
+    boolean State;
+    ShimmerFrameLayout shimmerFrameLayout;
+    private EditText message;
     private String mobile;
     private String myUserNameInOthersContact;
     private String otherUserFcmToken;
@@ -88,18 +101,22 @@ public class Chat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        mobile = BlankFragment.mobile;
+        mobile = MainActivity.mobile;
         int[] check1 = {0};
         final TextView name = findViewById(R.id.name_chat);
-        final EditText message = findViewById(R.id.message);
+        message = findViewById(R.id.message);
         final ImageView sendButton = findViewById(R.id.sendBtn);
         TextView Status = findViewById(R.id.Status);
         chattingRecyclerView = findViewById(R.id.chattingRecyclerView);
-//        databaseReference.child(mobile).child("Status").setValue(1);
+//        TextView info=findViewById(R.id.information);
+//        databaseReference.child("Users").child(mobile).child("State").setValue(1);
         // data from message adapter
+        SharedPreferences sharedPreferences1= getApplicationContext().getSharedPreferences("Notifications",MODE_PRIVATE);
+        State=sharedPreferences1.getBoolean("Status",true);
         final String getName = getIntent().getStringExtra("name");
         name.setText(getName);
 
+        MainActivity.cond=true;
 //        new SimpleTooltip.Builder(getApplicationContext())
 //                .anchorView(sendButton)
 //                .text("Click here to match with people")
@@ -114,34 +131,62 @@ public class Chat extends AppCompatActivity {
         //get user mobile from memory
         getUserMobile = MemoryData.getData(Chat.this);
 
+        back=findViewById(R.id.back);
         mobile=getUserMobile;
         ImageView options = findViewById(R.id.options);
         ImageView camera = findViewById(R.id.camera);
         chatAdapter = new chatAdapter(chatLists, Chat.this, MemoryData.getData(getApplicationContext()));
         chattingRecyclerView.setAdapter(chatAdapter);
         RelativeLayout topBar = findViewById(R.id.topBar);
-
+        shimmerFrameLayout=findViewById(R.id.shimmer);
+        shimmerFrameLayout.startShimmer();
+//        Toast.makeText(getApplicationContext(),getMobile,Toast.LENGTH_SHORT).show();
 //        String profilePicFromNotif=getIntent().getStringExtra("profilePic");
 
         final int[] var = {0};
-//        databaseReference.child(getMobile).child("Status").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if((long)(snapshot.getValue())==Long.valueOf(0)){
-//                    Status.setText("Offline");
-//                    Status.setTextColor(Color.parseColor("#cb7d67"));
-//                }else{
-//                    Status.setText("Online");
-//                    Status.setTextColor(Color.parseColor("#94E8B4"));
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        final int minimumHeight = 0;
+        valLis1=databaseReference.child("Users").child(getMobile).child("State").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    if((long)(snapshot.getValue())==Long.valueOf(0)){
+                        Status.setText("Offline");
+                        Status.setTextColor(Color.parseColor("#cb7d67"));
+                    }else{
+                        Status.setText("Online");
+                        Status.setTextColor(Color.parseColor("#94E8B4"));
+                    }
+                }catch (Exception e){};
+
+
+//                if(var[0] ==0){
+//
+//                    myUserNameInOthersContact=snapshot.child(getMobile).child("contacts").child(getUserMobile).child("Name").getValue(String.class);
+//                    otherUserFcmToken=snapshot.child("Users").child(getMobile).child("fcmToken").getValue(String.class);
+//                    String dp=snapshot.child(getMobile).child("profilePic").getValue(String.class);
+//                    if(dp!=null){
+//                        Picasso.get()
+//                                .load(dp)
+//                                .placeholder(R.drawable.default_user) // Placeholder image while loading
+//                                .error(R.drawable.default_user) // Error image if the URL is invalid
+//                                .into(profilePic);
+//                    }
+//                    var[0] =1;
 //                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 //        chattingRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            private boolean isScrolling = false;
@@ -228,6 +273,7 @@ public class Chat extends AppCompatActivity {
 //            }
 //        });
 
+        final boolean[] cond = {true};
 
         chattingRecyclerView.setLayoutManager(new LinearLayoutManager(Chat.this));
         chattingRecyclerView.hasFixedSize();
@@ -244,9 +290,14 @@ public class Chat extends AppCompatActivity {
                     }
                 }
                 if(var[0] ==0){
+
+                    if(cond[0]) {
+                        databaseReference.child("Users").child(mobile).child("State").setValue(1);
+                        cond[0] =false;
+                    }
                     myUserNameInOthersContact=snapshot.child(getMobile).child("contacts").child(getUserMobile).child("Name").getValue(String.class);
                     otherUserFcmToken=snapshot.child("Users").child(getMobile).child("fcmToken").getValue(String.class);
-                    String dp=snapshot.child(getUserMobile).child("profilePic").getValue(String.class);
+                    String dp=snapshot.child(getMobile).child("profilePic").getValue(String.class);
                     if(dp!=null){
                         Picasso.get()
                                 .load(dp)
@@ -272,7 +323,7 @@ public class Chat extends AppCompatActivity {
 
                                 Timestamp timestamp = new Timestamp(Long.parseLong(messageTimeStamp));
                                 Date date = new Date(timestamp.getTime());
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
                                 SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
                                 chatList chatList = new chatList(Mobile, getName, getMsg, simpleDateFormat.format(date), simpleTimeFormat.format(date));
                                 chatLists.add(chatList);
@@ -284,13 +335,14 @@ public class Chat extends AppCompatActivity {
                                 chatAdapter.updateChatList(chatLists);
                                 chattingRecyclerView.scrollToPosition(chatLists.size() - 1);
 
-
 //                                    }
                             }
 
                         }
                     }
                 }
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
 
             }
 
@@ -303,19 +355,9 @@ public class Chat extends AppCompatActivity {
         options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-////                        snapshot.child(getUserMobile).child("contacts")
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
-                Intent i = new Intent(getApplicationContext(), ContactChats.class);
-                startActivity(i);
+//                Toast.makeText(getApplicationContext(),"Inside",Toast.LENGTH_SHORT).show();
+                ReportDialog reportDialog=new ReportDialog();
+                reportDialog.openCenteredDialog(Chat.this,"User reported.","Report user");
             }
         });
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -324,74 +366,130 @@ public class Chat extends AppCompatActivity {
                 final String getTxtMessage = message.getText().toString();
 
                 // get current Timestamp
-                final String currentTimeStamp = String.valueOf(System.currentTimeMillis());
-//                Toast.makeText(getApplicationContext(),currentTimeStamp,Toast.LENGTH_SHORT).show();
 
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot snapshot1 : snapshot.child(getMobile).child("chat").getChildren()) {
-//                            Log.i("adityaaa",getMobile+"   "+getUserMobile);
-                            if (snapshot1.hasChild("messages") && (snapshot1.child("user_1").getValue().equals(getUserMobile) || snapshot1.child("user_2").getValue().equals(getUserMobile))) {
-//                                Log.i("ooppoo","pppppppp");
-                                check1[0] = 1;
-                                DatabaseReference newMessageRef = databaseReference.child(getMobile).child("chat").child(snapshot1.getKey()).child("messages").push();
-                                String messageId = newMessageRef.getKey();
-                                newMessageRef.child("timestamp").setValue(currentTimeStamp);
-                                newMessageRef.child("msg").setValue(getTxtMessage);
-                                newMessageRef.child("mobile").setValue(getUserMobile);
-//                                databaseReference.child(getMobile).child("chat").child(snapshot1.getKey()).child("messages").child(currentTimeStamp).child("msg").setValue(getTxtMessage);;
-//                                databaseReference.child(getMobile).child("chat").child(snapshot1.getKey()).child("messages").child(currentTimeStamp).child("mobile").setValue(getUserMobile);
-                                break;
-                            }
-                        }
-                        if (check1[0] == 0) {
-//                            Log.i("ooppoo","ppppooooooo");
+                sendMessage(getTxtMessage,getMobile,getUserMobile,chatKey,message);
+            }
+        });
+    }
+    public void sendMessage(String getTxtMessage,String getMobile,String getUserMobile,String chatKey,EditText message){
+        Log.i("adityaaa","-1");
+        final String currentTimeStamp = String.valueOf(System.currentTimeMillis());
+//                Toast.makeText(getApplicationContext(),currentTimeStamp,Toast.LENGTH_SHORT).show();
+        final int[] check1={0};
+        final String[] state = {"1"};
+        final String[] ChatId={chatKey};
+        final boolean[] condition = {true};
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                Log.i("adityaaa","0");
+                if(snapshot.child(getMobile).child("Notif").exists()){
+                    state[0] =snapshot.child(getMobile).child("Notif").getValue(String.class);
+                }
+
+
+
+
+                if (chatKey!=null) {
+
+                    Log.i("adityaaa","2");
 //                            DatabaseReference ChatKey = databaseReference.child(getMobile).child("chat").push();
-                            String ChatId = chatKey;
+                    ChatId[0] = chatKey;
 
 //                            int count= (int) (snapshot.child(getMobile).child("chat").getChildrenCount()+1);
 //                            Toast.makeText(getApplicationContext(),"yesss",Toast.LENGTH_SHORT).show();
 
+                    databaseReference.child(getMobile).child("contacts").child(getUserMobile).child("ChatId").setValue(ChatId[0]);
+                    databaseReference.child(getUserMobile).child("contacts").child(getMobile).child("ChatId").setValue(ChatId[0]);
+                    databaseReference.child(getMobile).child("chat").child(ChatId[0]).child("user_1").setValue(getMobile);
+                    databaseReference.child(getMobile).child("chat").child(ChatId[0]).child("user_2").setValue(getUserMobile);
 
-                            databaseReference.child(getMobile).child("chat").child(ChatId).child("user_1").setValue(getMobile);
-                            databaseReference.child(getMobile).child("chat").child(ChatId).child("user_2").setValue(getUserMobile);
+
+
 //                            if(databaseReference.child(getMobile).child("contacts").chi)
 //                            databaseReference.child(getMobile).child("contacts").child(getUserMobile).child("Name").setValue(getUserMobile);
-                            databaseReference.child(getMobile).child("contacts").child(getUserMobile).child("profilePic").setValue("");
-                            DatabaseReference newMessageRef = databaseReference.child(getMobile).child("chat").child(ChatId).child("messages").push();
+                    databaseReference.child(getMobile).child("contacts").child(getUserMobile).child("profilePic").setValue("");
+                    DatabaseReference newMessageRef = databaseReference.child(getMobile).child("chat").child(ChatId[0]).child("messages").push();
+                    String messageId = newMessageRef.getKey();
+                    newMessageRef.child("timestamp").setValue(currentTimeStamp);
+                    newMessageRef.child("msg").setValue(getTxtMessage);
+                    newMessageRef.child("mobile").setValue(getUserMobile);
+                    DatabaseReference newMessageRef1 = databaseReference.child(getUserMobile).child("chat").child(ChatId[0]).child("messages").child(messageId);
+//                    String messageId1 = newMessageRef.getKey();
+                    newMessageRef1.child("timestamp").setValue(currentTimeStamp);
+                    newMessageRef1.child("msg").setValue(getTxtMessage);
+                    newMessageRef1.child("mobile").setValue(getUserMobile);
+//                            databaseReference.child(getMobile).child("chat").child(String.valueOf(count)).child("messages").child(currentTimeStamp).child("msg").setValue(getTxtMessage);
+//                            databaseReference.child(getMobile).child("chat").child(String.valueOf(count)).child("messages").child(currentTimeStamp).child("mobile").setValue(getUserMobile);
+                }else{
+//                    Toast.makeText(getApplicationContext(),"2", Toast.LENGTH_SHORT).show();
+                    for (DataSnapshot snapshot1 : snapshot.child(getMobile).child("chat").getChildren()) {
+                        Log.i("adityaaa","1");
+                        if (snapshot1.hasChild("messages") && (snapshot1.child("user_1").getValue().equals(getUserMobile) || snapshot1.child("user_2").getValue().equals(getUserMobile))) {
+                            Log.i("adityaaa","2");
+                            check1[0] = 1;
+                            DatabaseReference newMessageRef = databaseReference.child(getMobile).child("chat").child(snapshot1.getKey()).child("messages").push();
                             String messageId = newMessageRef.getKey();
+                            ChatId[0]=snapshot1.getKey();
+
+                            databaseReference.child(getUserMobile).child("chat").child(snapshot1.getKey()).child("user_1").setValue(getUserMobile);
+                            databaseReference.child(getUserMobile).child("chat").child(snapshot1.getKey()).child("user_2").setValue(getMobile);
+                            Log.i("ooppoo",ChatId[0]);
                             newMessageRef.child("timestamp").setValue(currentTimeStamp);
                             newMessageRef.child("msg").setValue(getTxtMessage);
                             newMessageRef.child("mobile").setValue(getUserMobile);
-//                            databaseReference.child(getMobile).child("chat").child(String.valueOf(count)).child("messages").child(currentTimeStamp).child("msg").setValue(getTxtMessage);
-//                            databaseReference.child(getMobile).child("chat").child(String.valueOf(count)).child("messages").child(currentTimeStamp).child("mobile").setValue(getUserMobile);
+
+                            DatabaseReference newMessageRef1=databaseReference.child(getUserMobile).child("chat").child(ChatId[0]).child("messages").child(messageId);
+                            newMessageRef1.child("timestamp").setValue(currentTimeStamp);
+                            newMessageRef1.child("msg").setValue(getTxtMessage);
+                            newMessageRef1.child("mobile").setValue(getUserMobile);
+//                            condition[0] =false;
+//                                databaseReference.child(getMobile).child("chat").child(snapshot1.getKey()).child("messages").child(currentTimeStamp).child("msg").setValue(getTxtMessage);;
+//                                databaseReference.child(getMobile).child("chat").child(snapshot1.getKey()).child("messages").child(currentTimeStamp).child("mobile").setValue(getUserMobile);
+                            break;
                         }
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-                DatabaseReference newMessageRef = databaseReference.child(mobile).child("chat").child(chatKey).child("messages").push();
-                String messageId = newMessageRef.getKey();
-                databaseReference.child(mobile).child("chat").child(chatKey).child("user_1").setValue(getUserMobile);
-                databaseReference.child(mobile).child("chat").child(chatKey).child("user_2").setValue(getMobile);
 
-                newMessageRef.child("timestamp").setValue(currentTimeStamp);
-                newMessageRef.child("msg").setValue(getTxtMessage);
-                newMessageRef.child("mobile").setValue(getUserMobile);
-//                databaseReference.child(mobile).child("chat").child(chatKey).child("messages").child(currentTimeStamp).child("msg").setValue(getTxtMessage);
-//                databaseReference.child(mobile).child("chat").child(chatKey).child("messages").child(currentTimeStamp).child("mobile").setValue(getUserMobile);
-                sendNotification(getTxtMessage);
-                message.setText("");
+
+
+//                if(ChatId==null){
+
+//                }
+
+
+                if(state[0].equals("1")) sendNotification(getTxtMessage,ChatId[0]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+
+//        if(ChatId[0]!=null && condition[0]){
+//            Toast.makeText(getApplicationContext(),"end",Toast.LENGTH_SHORT).show();
+//            DatabaseReference newMessageRef = databaseReference.child(getUserMobile).child("chat").child(ChatId[0]).child("messages").push();
+//            String messageId = newMessageRef.getKey();
+//            databaseReference.child(getUserMobile).child("chat").child(ChatId[0]).child("user_1").setValue(getUserMobile);
+//            databaseReference.child(getUserMobile).child("chat").child(ChatId[0]).child("user_2").setValue(getMobile);
+//
+//            newMessageRef.child("timestamp").setValue(currentTimeStamp);
+//            newMessageRef.child("msg").setValue(getTxtMessage);
+//            newMessageRef.child("mobile").setValue(getUserMobile);
+//        }
+
+//                databaseReference.child(mobile).child("chat").child(chatKey).child("messages").child(currentTimeStamp).child("msg").setValue(getTxtMessage);
+//                databaseReference.child(mobile).child("chat").child(chatKey).child("messages").child(currentTimeStamp).child("mobile").setValue(getUserMobile);
+
+
+        message.setText("");
     }
 
-    void sendNotification(String message) {
+    void sendNotification(String message,String chatKey) {
         try {
             JSONObject jsonObject =new JSONObject();
             JSONObject notification0bj = new JSONObject();
@@ -430,5 +528,18 @@ public class Chat extends AppCompatActivity {
                 Log.i("TestLog","Success");
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        databaseReference.removeEventListener(valLis1);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        databaseReference.removeEventListener(valLis1);
     }
 }

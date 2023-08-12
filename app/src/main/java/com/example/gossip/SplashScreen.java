@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.example.gossip.chat.Chat;
 
 public class SplashScreen extends AppCompatActivity {
@@ -20,6 +22,7 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
 //                 Start the main activity or the next activity
                 if(getIntent().getExtras()!=null) {
+                    Log.i("checking","yes");
                     //from notification
                     String userMobile = getIntent().getExtras().getString("Mobile");
                     String Name = getIntent().getExtras().getString("Name");
@@ -35,6 +38,7 @@ public class SplashScreen extends AppCompatActivity {
                         BlankFragment blankFragment=new BlankFragment();
                         Bundle bundle = new Bundle();
                         startActivity(i);
+                        Animatoo.INSTANCE.animateZoom(SplashScreen.this);
                         finish();
                     }
                     else{
@@ -45,6 +49,6 @@ public class SplashScreen extends AppCompatActivity {
 
                 finish(); // Close the splash screen activity
             }
-        }, 1000);
+        }, 1500);
     }
 }

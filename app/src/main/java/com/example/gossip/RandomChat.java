@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,8 +52,10 @@ import java.util.Objects;
 import java.util.Random;
 
 import com.google.android.flexbox.FlexboxLayout.LayoutParams;
+import com.nitish.typewriterview.TypeWriterView;
 import com.siddydevelops.customlottiedialogbox.CustomLottieDialog;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.douglasjunior.androidSimpleTooltip.SimpleTooltip;
 
 /**
@@ -64,6 +68,7 @@ public class RandomChat extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
+    public static Dialog dialog;
     private EditText enter_tags;
     private ImageView add;
     public FlexboxLayout flexboxLayout;
@@ -71,6 +76,8 @@ public class RandomChat extends Fragment {
     private TextView textView1;
     private TextView textView2;
     private TextView textView3;
+
+    private TextView hint;
     private TextView textView4;
     private TextView textView5;
     private TextView textView6;
@@ -78,7 +85,10 @@ public class RandomChat extends Fragment {
     private TextView textView8;
     private TextView textView9;
     private  EditText UserName;
+    private List<String> myTags;
     private TextView MyHashTags;
+    private TypeWriterView typeWriterView;
+    private CircleImageView profilePic;
     private View view1;
     private TextView search;
     public int condition;
@@ -94,6 +104,8 @@ public class RandomChat extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String mParam1;
+
+    private List<View> dynamicViews = new ArrayList<>();
     private String mParam2;
 
     public RandomChat() {
@@ -137,15 +149,25 @@ public class RandomChat extends Fragment {
         textView.setText(text);
         textView.setBackgroundResource(R.drawable.hashtag_bg);
         textView.setTextSize(15);
+        textView.setTextColor(Color.WHITE);
         textView.setPadding(40, 30, 40, 30);
         view1.setVisibility(View.VISIBLE);
         MyHashTags.setVisibility(View.VISIBLE);
+        hint.setVisibility(View.VISIBLE);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         layoutParams.setMargins(15, 10, 15, 20);
 
+        dynamicViews.add(textView);
+        textView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                flexboxLayout.removeView(textView);
+                return true;
+            }
+        });
         flexboxLayout.addView(textView, layoutParams);
     }
 
@@ -168,9 +190,39 @@ public class RandomChat extends Fragment {
         textView7 = view.findViewById(R.id.textview7);
         search = view.findViewById(R.id.Search);
         UserName=view.findViewById(R.id.user_name);
+        hint=view.findViewById(R.id.hint);
+        String[] arr=new String[3];
+        typeWriterView = view.findViewById(R.id.typeWriterView);
+        arr[0]="Connect with people from around the world based on common interests.";
+        arr[1]="Enter the hashtags to chat on a common topic.";
+        arr[2]="Chat with people from around the world without revealing you identity.";
+        Handler handler = new Handler();
+        final int[] currentTextIndex = {0};
+        Runnable textRunnable = new Runnable() {
+            @Override
+            public void run() {
+                typeWriterView.animateText(arr[currentTextIndex[0]]);
+                currentTextIndex[0]++;
+
+                if (currentTextIndex[0] < arr.length) {
+                    // Schedule the next text change after a delay (e.g., 2 seconds)
+                    handler.postDelayed(this, 4000);
+                }
+            }
+        };
+
+        handler.postDelayed(textRunnable, 10);
+//        for(int i=0;i<3;i++){
+//
+//            typeWriterView.animateText(arr[i]);
+//
+//        }
+
         SharedPreferences sharedPreferences = context.getSharedPreferences("MyAuthenticationId",MODE_PRIVATE);
 
-        UserName.setText(sharedPreferences.getString("name","User@1a8e"));
+
+
+//        UserName.setText(sharedPreferences.getString("name","User@1a8e"));
         view1=view.findViewById(R.id.view1);
         MyHashTags=view.findViewById(R.id.MyHashTags);
         view1.setVisibility(View.GONE);
@@ -179,116 +231,56 @@ public class RandomChat extends Fragment {
         TextView showMore = view.findViewById(R.id.showMore);
         showMore.setVisibility(View.INVISIBLE);
         showLess.setVisibility(View.VISIBLE);
-        List<String> myTags = new ArrayList<>();
+        myTags = new ArrayList<>();
         myUserName = UserName.getText().toString();
 //        UserName.setClickable(false);
         UserName.setFocusable(false);
+        hint.setVisibility(View.GONE);
+        profilePic=view.findViewById(R.id.profile_image);
+
+
         UserName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
 //        databaseReference.child("RandomChat").child("HashTags").setValue("");
 
-        databaseReference.child("RandomChat").child("Status").child(myUserName).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Toast.makeText(getContext(),"bhar",Toast.LENGTH_SHORT).show();
-                if (snapshot.child("State").getValue() == Long.valueOf(1)) {
-//                    Toast.makeText(getContext(),"andar",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getContext(), StartRandomChat.class);
-                    intent.putExtra("name", snapshot.child("OppoName").getValue(String.class));
-                    intent.putExtra("myUserName", myUserName);
-                    intent.putExtra("chatRoomName", snapshot.child("CRN").getValue(String.class));
-//                    condition=1;
-                    startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        databaseReference.child("RandomChat").child("Status").child(myUserName).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+////                Toast.makeText(getContext(),"bhar",Toast.LENGTH_SHORT).show();
+//                if (snapshot.child("State").getValue() == Long.valueOf(1)) {
+////                    Toast.makeText(getContext(),"andar",Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(getContext(), StartRandomChat.class);
+//                    intent.putExtra("name", snapshot.child("OppoName").getValue(String.class));
+//                    intent.putExtra("myUserName", myUserName);
+//                    intent.putExtra("chatRoomName", snapshot.child("CRN").getValue(String.class));
+//
+//                    startMatching.dialog.dismiss();
+////                    condition=1;
+//                    startActivity(intent);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCenteredDialog();
-//                Log.i("HashTagsList", String.valueOf(myTags));
-                if (!myTags.isEmpty()) {
-                    databaseReference.child("RandomChat").child("HashTags").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            int flag = 0;
-                            condition = 0;
-                            for (String s : myTags) {
-//                                if(condition==0) {
-                                if (snapshot.hasChild(s) && snapshot.child(s).getChildrenCount() > 0) {
-                                    flag = 1;
-                                    int users_count = (int) snapshot.child(s).getChildrenCount();
-//                                        Random random = new Random();
-//                                        int randomUser = random.nextInt(users_count - 1 + 1);
-//                                    Toast.makeText(getContext(),String.valueOf(randomUser),Toast.LENGTH_SHORT).show();
-                                    for (DataSnapshot snapshot1 : snapshot.child(s).getChildren()) {
-                                        String oppoUserName = snapshot1.getKey();
-                                        if(!oppoUserName.equals(myUserName)) {
-                                            databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("State").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot2) {
-                                                    if (snapshot2.getValue() == Long.valueOf(0)) {
-                                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue(myUserName + " " + oppoUserName);
-                                                        databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("CRN").setValue(myUserName + " " + oppoUserName);
-                                                        databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("OppoName").setValue(myUserName);
-                                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("OppoName").setValue(oppoUserName);
-                                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(1);
-                                                        databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("State").setValue(1);
-                                                        condition = 1;
-//                                                        Intent intent = new Intent(getContext(), StartRandomChat.class);
-//                                                        intent.putExtra("name", oppoUserName);
-//                                                        intent.putExtra("myUserName", myUserName);
-//                                                        startActivity(intent);
-
-
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                                }
-                                            });
-                                        }
-//                                            randomUser--;
-                                    }
-
-
-                                    // Now match with the Random User
-                                }
-                                databaseReference.child("RandomChat").child("HashTags").child(s).child(myUserName).setValue("");
-//                                Toast.makeText(getContext(), "Working", Toast.LENGTH_SHORT).show();
-//                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(0);
-//                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue("");
-//                                    }
-//                                }else break;
-
-                            }
-                            if (flag == 0)
-                                text.setText("No users Online with your hashtags");
-//                                Toast.makeText(getContext(), "No users Online with your hashtags", Toast.LENGTH_SHORT).show();
-                            myTags.clear();
-                            flexboxLayout.removeAllViews();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-//                    for(String s:myTags){
-//
-//                    }
-                }
+//                startMatching=new StartMatching();
+                Container.setMyTags(myTags);
+                Log.i("Mytags",myTags.toString()+"   "+Container.getMyTags().toString());
+//                startMatching.startMatching(getContext(),myUserName,Container.getMyTags());
+                Intent i=new Intent(getContext(),MatchingAnimation.class);
+                i.putExtra("name",Container.getMyName());
+//                Container.setStop(false);
+                startActivity(i);
 
             }
         });
@@ -314,13 +306,12 @@ public class RandomChat extends Fragment {
                 PopularHashTags.setLayoutParams(layoutParams);
             }
         });
-
-        SharedPreferences prefs = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        String filePath = prefs.getString("profile_picture_path", null);
-        if (filePath != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            my_dp.setImageBitmap(bitmap);
-        }
+//        SharedPreferences prefs = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+//        String filePath = prefs.getString("profile_picture_path", null);
+//        if (filePath != null) {
+//            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+//            my_dp.setImageBitmap(bitmap);
+//        }
 //        List<String> PopularTags= Arrays.asList("ViratKolhi","PrimeMinisterOfIndia","BTS","TV","Roadies","SplitsVillaS2","BollywoodShows","BJP","InstagramReels","Kashmir","War","Cars","Science","InterstellarMovie");
 
 //        for (String text : PopularTags) {
@@ -343,6 +334,18 @@ public class RandomChat extends Fragment {
 
 //        List<TextItem> textItemList=new ArrayList<>();
 //        TextAdapter adapter = new TextAdapter(textItemList);
+
+        flexboxLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(dynamicViews.contains(v)){
+                    flexboxLayout.removeView(v);
+                    dynamicViews.remove(v);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         enter_tags.setInputType(InputType.TYPE_CLASS_TEXT);
         enter_tags.setOnKeyListener(new View.OnKeyListener() {
@@ -427,34 +430,132 @@ public class RandomChat extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(Container.getMyImage()!=null){
+            profilePic.setImageBitmap(Container.getMyImage());
+        }else{
+            Bitmap bitmap=MemoryData.getProfilePicture(MainActivity.mobile,getContext());
+            if(bitmap!=null){
+                profilePic.setImageBitmap(bitmap);
+                Container.setMyImage(bitmap);
+            }
+        }
+        if(Container.getMyName()!=null) UserName.setText(Container.getMyName());
         databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(2);
         databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue("");
+        if(Container.ChatRoomName!=null){
+            databaseReference.child("RandomChat").child("ChatRoom").child(Container.ChatRoomName).removeValue();
+            Container.ChatRoomName=null;
+        }
     }
-    public void openCenteredDialog() {
-        // Create a Dialog instance
-        Dialog dialog = new Dialog(getContext());
+//    public void openCenteredDialog() {
+//        // Create a Dialog instance
+//        dialog = new Dialog(getContext());
+//
+//        // Set the layout for the Dialog (your custom layout)
+//        dialog.setContentView(R.layout.matching_anim_window);
+//
+//        // Set the corner radius for the Dialog
+//        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+//
+//        // Optionally set other properties for the Dialog, e.g., size, title, etc.
+//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        dialog.setTitle("Your Dialog Title");
+//        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(0);
+//        text=dialog.findViewById(R.id.textView);
+//        TextView stop=dialog.findViewById(R.id.Stop);
+//        stop.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(2);
+//                dialog.dismiss();
+//            }
+//        });
+//        // Show the Dialog
+//        dialog.show();
+//    }
+//    public void startMatching(){
+//        openCenteredDialog();
+////                Log.i("HashTagsList", String.valueOf(myTags));
+//        if (!myTags.isEmpty()) {
+//            databaseReference.child("RandomChat").child("HashTags").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                    int flag = 0;
+//                    condition = 0;
+//                    for (String s : myTags) {
+////                                if(condition==0) {
+//                        if (snapshot.hasChild(s) && snapshot.child(s).getChildrenCount() > 0) {
+//                            flag = 1;
+//                            int users_count = (int) snapshot.child(s).getChildrenCount();
+////                                        Random random = new Random();
+////                                        int randomUser = random.nextInt(users_count - 1 + 1);
+////                                    Toast.makeText(getContext(),String.valueOf(randomUser),Toast.LENGTH_SHORT).show();
+//                            for (DataSnapshot snapshot1 : snapshot.child(s).getChildren()) {
+//                                String oppoUserName = snapshot1.getKey();
+//                                if(!oppoUserName.equals(myUserName)) {
+//                                    databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("State").addListenerForSingleValueEvent(new ValueEventListener() {
+//                                        @Override
+//                                        public void onDataChange(@NonNull DataSnapshot snapshot2) {
+//                                            if (snapshot2.getValue() == Long.valueOf(0)) {
+//                                                databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue(myUserName + " " + oppoUserName);
+//                                                databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("CRN").setValue(myUserName + " " + oppoUserName);
+//                                                databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("OppoName").setValue(myUserName);
+//                                                databaseReference.child("RandomChat").child("Status").child(myUserName).child("OppoName").setValue(oppoUserName);
+//                                                databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(1);
+//                                                databaseReference.child("RandomChat").child("Status").child(oppoUserName).child("State").setValue(1);
+//                                                condition = 1;
+////                                                        Intent intent = new Intent(getContext(), StartRandomChat.class);
+////                                                        intent.putExtra("name", oppoUserName);
+////                                                        intent.putExtra("myUserName", myUserName);
+////                                                        startActivity(intent);
+//
+//
+//                                            }
+//                                        }
+//
+//                                        @Override
+//                                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                        }
+//                                    });
+//                                }
+////                                            randomUser--;
+//                            }
+//
+//
+//                            // Now match with the Random User
+//                        }
+//                        databaseReference.child("RandomChat").child("HashTags").child(s).child(myUserName).setValue("");
+////                                Toast.makeText(getContext(), "Working", Toast.LENGTH_SHORT).show();
+////                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(0);
+////                                        databaseReference.child("RandomChat").child("Status").child(myUserName).child("CRN").setValue("");
+////                                    }
+////                                }else break;
+//
+//                    }
+//                    if (flag == 0)
+//                        text.setText("No users Online with your hashtags");
+////                                Toast.makeText(getContext(), "No users Online with your hashtags", Toast.LENGTH_SHORT).show();
+//                    myTags.clear();
+//                    flexboxLayout.removeAllViews();
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+////                    for(String s:myTags){
+////
+////                    }
+//        }
+//    }
 
-        // Set the layout for the Dialog (your custom layout)
-        dialog.setContentView(R.layout.matching_anim_window);
 
-        // Set the corner radius for the Dialog
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-
-        // Optionally set other properties for the Dialog, e.g., size, title, etc.
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        dialog.setTitle("Your Dialog Title");
-        databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(0);
-        text=dialog.findViewById(R.id.textView);
-        TextView stop=dialog.findViewById(R.id.Stop);
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                databaseReference.child("RandomChat").child("Status").child(myUserName).child("State").setValue(2);
-                dialog.dismiss();
-            }
-        });
-        // Show the Dialog
-        dialog.show();
+    @Override
+    public void onPause() {
+        super.onPause();
+        typeWriterView.stopAnimation();
     }
-
 }

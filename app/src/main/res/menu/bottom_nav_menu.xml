@@ -8,8 +8,8 @@
         android:title="Home"/>
     <item
         android:id="@+id/RandomChat"
-        android:icon="@drawable/chat_icon_1"
-        android:title="Chat"/>
+        android:icon="@drawable/connect"
+        android:title="Connect"/>
 
     <item
         android:id="@+id/Notification"

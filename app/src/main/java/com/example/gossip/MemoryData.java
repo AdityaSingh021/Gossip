@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.gossip.Status.StatusState;
 import com.example.gossip.messages.MessagesList;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -298,6 +299,47 @@ public static String getData (Context context) {
         }
 
         return myList;
+    }
+
+
+    public static void storeStatusState(Context context, List<StatusState> messageList) {
+        File file = new File(context.getFilesDir(), "statusState.json");
+
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            Gson gson = new Gson();
+            String json = gson.toJson(messageList);
+            fos.write(json.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public static List<StatusState> getStatusState(Context context) {
+        File file = new File(context.getFilesDir(), "statusState.json");
+
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            reader.close();
+
+            String json = stringBuilder.toString();
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<MessagesList>>() {}.getType();
+            return gson.fromJson(json, listType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 

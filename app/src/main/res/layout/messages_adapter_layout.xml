@@ -39,17 +39,18 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textSize="15dp"
                     android:maxLines="1"
                     android:text="Fullname"
-                    android:textStyle="bold"></TextView>\
+                    android:textStyle="bold"></TextView>
                 <TextView
                     android:fontFamily="@font/open_sans"
                     android:textColor="@color/white"
                     android:id="@+id/lastMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="14dp"
+                    android:maxLength="26"
                     android:maxLines="1"
                     android:text="This is last message"></TextView>
 
@@ -74,6 +75,7 @@
                     android:background="@drawable/message_notification"
                     android:gravity="center"
                     android:text="1"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="10sp" />
 

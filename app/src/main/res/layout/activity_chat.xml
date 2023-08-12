@@ -16,8 +16,18 @@
             android:elevation="10dp"
             android:layout_height="wrap_content">
 
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:layout_marginStart="10sp"
+                android:layout_marginTop="20sp"
+                android:layout_marginEnd="5sp"
+                android:layout_marginBottom="20sp"
+                android:src="@drawable/ic_baseline_arrow_back_24" />
 
+            <RelativeLayout
+                android:layout_toRightOf="@id/back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
@@ -26,32 +36,33 @@
                     android:id="@+id/profilePic"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_marginStart="20dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/man_3"></de.hdodenhof.circleimageview.CircleImageView>
+                    android:background="@drawable/default_user"></de.hdodenhof.circleimageview.CircleImageView>
 
 
                 <TextView
+                    android:layout_toRightOf="@id/profilePic"
                     android:id="@+id/name_chat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="80dp"
                     android:maxLines="1"
                     android:text="User Name"
                     android:textColor="@color/white"
+                    android:layout_marginStart="10dp"
                     android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:layout_toRightOf="@id/profilePic"
                     android:id="@+id/Status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/name_chat"
-                    android:layout_marginStart="80dp"
+                    android:layout_marginStart="10dp"
                     android:maxLines="1"
                     android:text="Offline"
-                    android:textColor="#94E8B4"
+                    android:textColor="#cb7d67"
                     android:textSize="15dp" />
 
             </RelativeLayout>
@@ -85,12 +96,22 @@
         android:background="#30FFFFFF"
         android:layout_below="@+id/topBar"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chattingRecyclerView"
+    <com.facebook.shimmer.ShimmerFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomBar"
-        android:layout_below="@+id/topBar"/>
+        android:layout_below="@+id/topBar"
+        android:id="@+id/shimmer">
+
+        <include layout="@layout/shimmer_chat"/>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chattingRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/bottomBar"
+        android:layout_below="@+id/topBar"
+        android:layout_height="match_parent" />
 
     <View
         android:layout_width="match_parent"
@@ -118,7 +139,6 @@
             android:fontFamily="@font/open_sans"
 
             android:hint="Message"
-            android:maxLines="1"
             android:padding="10dp"
             android:paddingStart="20dp"
             android:textColor="@color/white"

@@ -21,14 +21,14 @@
 
             <TextView
                 android:fontFamily="@font/open_sans"
-                android:paddingHorizontal="15dp"
+                android:paddingHorizontal="10dp"
                 android:id="@+id/oppoMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/recieve_msg"
-                android:paddingVertical="10dp"
+                android:paddingVertical="5dp"
                 android:text="This is opponent message"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
 
             <TextView
@@ -55,16 +55,17 @@
 
 
             <TextView
+                android:layout_marginStart="20sp"
                 android:fontFamily="@font/open_sans"
                 android:id="@+id/myMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/send_msg"
-                android:paddingHorizontal="15dp"
-                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
                 android:text="This is my message"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/myMsgTime"

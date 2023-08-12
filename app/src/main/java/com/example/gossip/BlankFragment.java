@@ -4,21 +4,15 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.Manifest;
-import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,70 +21,61 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.example.gossip.Status.StatusAdapter;
+import com.example.gossip.Status.StatusGallery;
+import com.example.gossip.Status.StatusModel;
+import com.example.gossip.Status.StatusState;
 import com.example.gossip.messages.MessagesAdapter;
 import com.example.gossip.messages.MessagesList;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.TreeSet;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
-import android.animation.ValueAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.content.Intent;
-import android.graphics.Outline;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.gossip.chat.Chat;
-import com.example.gossip.messages.MessagesAdapter;
-import com.example.gossip.messages.MessagesList;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -98,6 +83,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.siddydevelops.customlottiedialogbox.CustomLottieDialog;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -109,11 +95,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class BlankFragment extends Fragment {
 
+    ShimmerFrameLayout shimmerFrameLayout;
 
+    ValueEventListener valueEventListener;
+    View view1;
+    private RecyclerView recyclerView;
+    private StatusAdapter adapter;
+    public static List<StatusModel> statusList;
     private static final int REQUEST_READ_CONTACTS_PERMISSION = 1;
 
     public Uri filepath;
     public Bitmap bitmap;
+    private ImageView addStatus;;
     private Bitmap temp;
     public FirebaseStorage storage = FirebaseStorage.getInstance();
     public com.google.android.material.bottomappbar.BottomAppBar bottomBar;
@@ -130,6 +123,7 @@ public class BlankFragment extends Fragment {
     private String chatKey="";
     CircleImageView my_story;
     public static String myName;
+    public static String Mystatus;
     private List<MessagesList> retrievedList;
 //    public  List<String> ind;
     private boolean dataSet=false;
@@ -143,7 +137,7 @@ public class BlankFragment extends Fragment {
     public static String newUser_mobile;
 //    private TreeSet<String> set;
     private List<MessagesList> messagesLists=new ArrayList<>();
-    private DatabaseReference databaseReference =FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");;
+    private DatabaseReference databaseReference =FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");
 
     FirebaseStorage firebaseStorage;
     StorageReference storageReference;
@@ -202,76 +196,186 @@ public class BlankFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(data!=null && data.getData()!=null && requestCode==1 && resultCode==RESULT_OK){
-            filepath=data.getData();
-            try{
-                InputStream inputStream=getActivity().getContentResolver().openInputStream(filepath);
-                bitmap= BitmapFactory.decodeStream(inputStream);
-                String fileName = "profile_picture.jpg";
-                FileOutputStream fos = getActivity().openFileOutput(fileName, MODE_PRIVATE);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                fos.close();
 
-                // Store the file path in SharedPreferences
-                SharedPreferences prefs = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("profile_picture_path", getActivity().getFilesDir() + "/" + fileName);
-                editor.apply();
-                my_dp.setImageBitmap(bitmap);
-                my_story.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        if(data!=null && data.getData()!=null && requestCode==1 && resultCode==RESULT_OK){
+//            filepath=data.getData();
+//            try{
+//                InputStream inputStream=getActivity().getContentResolver().openInputStream(filepath);
+//                bitmap= BitmapFactory.decodeStream(inputStream);
+//                String fileName = "profile_picture.jpg";
+//                FileOutputStream fos = getActivity().openFileOutput(fileName, MODE_PRIVATE);
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+//                fos.close();
+//
+//                // Store the file path in SharedPreferences
+//                SharedPreferences prefs = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+//                SharedPreferences.Editor editor = prefs.edit();
+//                editor.putString("profile_picture_path", getActivity().getFilesDir() + "/" + fileName);
+//                editor.apply();
+//                my_dp.setImageBitmap(bitmap);
+//                my_story.setImageBitmap(bitmap);
+//            } catch (FileNotFoundException e) {
+////                e.printStackTrace();
+//            } catch (IOException e) {
 //                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//            }
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_blank, container, false);
-
+        setRetainInstance(true);
 //        customLottieDialog = new CustomLottieDialog(getContext(), 	"LO04");
 //        customLottieDialog.setLottieBackgroundColor("#000000");
 //        customLottieDialog.setDialogLayoutDimensions(200,200);
 //        customLottieDialog.setLoadingText("Loading...");
 //        customLottieDialog.show();
 
+        shimmerFrameLayout=view.findViewById(R.id.shimmer);
         databaseReference= FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");
         mobile= MemoryData.getData(requireContext());
-//        databaseReference.child(mobile).child("Status").setValue(1);
-//        Log.i("my mobile no",mobile);
-//        imageView=view.findViewById(R.id.left_bottom_nav);
-//        relativeLayout=view.findViewById(R.id.relativeLayout);
-//        imageView2=view.findViewById(R.id.right_bottom_nav);
-//        name=MemoryData.getName(requireContext());
+        Container.Mobile=mobile;
+        recyclerView=view.findViewById(R.id.recyclerView);
         messagesRecyclerView=view.findViewById(R.id.messagesRecyclerView);
-//        my_dp=view.findViewById(R.id.user_image);
-//        add=view.findViewById(R.id.add);
         ImageView search=view.findViewById(R.id.search);
         messagesRecyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
         ImageView options=view.findViewById(R.id.Options);
         my_story=view.findViewById(R.id.my_story);
-//        com.google.android.material.bottomappbar.BottomAppBar bottomBar = ((BottomNavigationPage) getActivity()).bottomBar;
+        addStatus=view.findViewById(R.id.addStatus);
         messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         messagesAdapter=new MessagesAdapter(messagesLists,getContext());
         messagesRecyclerView.setAdapter(messagesAdapter);
-        retrievedList = MemoryData.retrieveMessageList(getContext());
+        shimmerFrameLayout.startShimmer();
         SharedPreferences sharedPreferences = context.getSharedPreferences("MyAuthenticationId",MODE_PRIVATE);
         myName=sharedPreferences.getString("name","Unknown");
 
+        androidx.appcompat.widget.SearchView searchView=view.findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                messagesAdapter.filter(newText,messagesLists);
+                return true;
+            }
+        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                // This method is called when the user presses the search button
+//                // (optional: you can perform any additional actions here)
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                // This method is called whenever the user changes the text in the SearchView
+//
+//            }
+//        });
         information=view.findViewById(R.id.information);
         information.setVisibility(View.INVISIBLE);
+        my_story.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Mystatus!=null){
+                    Intent i=new Intent(context,StatusGallery.class);
+                    i.putExtra("Mobile",mobile);
+                    i.putExtra("Name",myName);
+                    i.putExtra("Index", -1);
+                    context.startActivity(i);
+                    Animatoo.INSTANCE.animateZoom(context);
+                }
+            }
+        });
+        if(statusList!=null){
+            if(Mystatus!=null){
+                Glide.with(getContext())
+                        .load(Mystatus)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                return false;
+                            }
 
-        if (retrievedList != null) {
-//            Toast.makeText(getContext(),"1",Toast.LENGTH_SHORT).show();
-            messagesAdapter.updateData(retrievedList);
-//            ind=MemoryData.retrieveIndex(getContext());
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, com.bumptech.glide.request.target.Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                RoundedBitmapDrawable circularDrawable = RoundedBitmapDrawableFactory.create(getResources(), ((BitmapDrawable) resource).getBitmap());
+                                circularDrawable.setCircular(true);
+                                my_story.setImageDrawable(circularDrawable);
+
+                                return true;
+                            }
+                        })
+                        .into(my_story);
+
+            }
+            adapter = new StatusAdapter(statusList,getContext());
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerView.setAdapter(adapter);
         }
+
+
+        if(!messagesLists.isEmpty()){
+            messagesAdapter.updateData(messagesLists);
+        }else{
+            retrievedList=MainActivity.retrievedList;
+            if (retrievedList != null) {
+                messagesAdapter.updateData(retrievedList);
+            }
+        }
+
+        addStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dexter.withContext(getContext())
+                        .withPermission(Manifest.permission.CAMERA)
+                        .withListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+//                                Toast.makeText(getContext(),"Permission granted",Toast.LENGTH_SHORT).show();
+                                Intent i=new Intent(Intent.ACTION_PICK);
+                                i.setType("image/*");
+                                startActivityForResult(Intent.createChooser(i,"Please select Image"),1);
+
+                            }
+
+                            @Override
+                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+
+                                if(permissionDeniedResponse.isPermanentlyDenied()) {
+//                                    Log.i("permissionProblem", permissionDeniedResponse.toString());
+//                                    Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                                    Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+//                                    intent.setData(uri);
+//                                    startActivity(intent);
+//                                    Toast.makeText(getContext(),"Permission granted",Toast.LENGTH_SHORT).show();
+                                    Intent i=new Intent(Intent.ACTION_PICK);
+                                    i.setType("image/*");
+                                    startActivityForResult(Intent.createChooser(i,"Please select Image"),1);
+                                }
+
+//                                Toast.makeText(getContext(),"Permission denied",Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+                                permissionToken.continuePermissionRequest();
+                            }
+                        }).check();
+            }
+        });
+
         ImageView camera=view.findViewById(R.id.camera);
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,23 +385,19 @@ public class BlankFragment extends Fragment {
                 openCenteredDialog();
             }
         });
-        SharedPreferences prefs = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        String filePath = prefs.getString("profile_picture_path", null);
-        if (filePath != null) {
-//            Toast.makeText(getContext(),"2",Toast.LENGTH_SHORT).show();
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-//            my_dp.setImageBitmap(bitmap);
-            my_story.setImageBitmap(bitmap);
-        }
+
         options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ImportContactsDialog();
 //                customLottieDialog = new CustomLottieDialog(getContext(), 	"LO04");
 //                customLottieDialog.setLottieBackgroundColor("#000000");
 //                customLottieDialog.setDialogLayoutDimensions(200,200);
 //                customLottieDialog.setLoadingText("Importing contacts...");
 //                customLottieDialog.show();
-                checkAndRequestContactsPermission();
+//                OpenDialogBox openDialogBox=new OpenDialogBox();
+//                openDialogBox.ImportContactsDialog(getContext(),"Import Contacts","#FFFFFF","Importing contacts");
+
 
 
             }
@@ -314,6 +414,7 @@ public class BlankFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Activity activity=getActivity();
 
+        view1=view;
         if (activity!=null && isAdded()) {
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -335,6 +436,7 @@ public class BlankFragment extends Fragment {
                                 chatKey = "";
                                 Log.i("mno", "4");
                                 for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                                    Log.i("mno", "5");
                                     final String getKey = dataSnapshot1.getKey();
                                     chatKey = getKey;
                                     final String getmobile = snapshot.child(chatKey).child("user_2").getValue(String.class);
@@ -342,10 +444,10 @@ public class BlankFragment extends Fragment {
                                     if (dataSnapshot1.hasChild("user_1") && dataSnapshot1.hasChild("user_2") && dataSnapshot1.hasChild("messages")) {
                                         final String getUserOne = dataSnapshot1.child("user_1").getValue(String.class);
                                         try {
-                                            if (!MemoryData.profilePictureExists(getmobile, getContext())) {
+//                                            if (!MemoryData.profilePictureExists(getmobile, getContext())) {
                                                 firebaseStorage = FirebaseStorage.getInstance();
                                                 storageReference = firebaseStorage.getReference();
-                                                StorageReference imgRef = storageReference.child(getmobile);
+                                                StorageReference imgRef = storageReference.child("ProfilePictures").child(getmobile);
 
                                                 imgRef.getBytes(5024 * 5024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                                                     @Override
@@ -353,13 +455,16 @@ public class BlankFragment extends Fragment {
                                                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                                         temp = bitmap;
                                                         if (bitmap != null)
-                                                            MemoryData.saveProfilePicture(bitmap, getmobile, getContext());
+                                                            try{
+                                                                MemoryData.saveProfilePicture(bitmap, getmobile, getContext());
+                                                            }catch (Exception e){}
+
 
 
                                                     }
                                                 }).addOnFailureListener(exception -> {
                                                 });
-                                            }
+//                                            }
                                         } catch (Exception e) {
                                         }
 
@@ -374,12 +479,12 @@ public class BlankFragment extends Fragment {
                                                 String LastMessageIfNotSaved = "";
                                                 for (DataSnapshot chatDataSnapshot : dataSnapshot1.child("messages").getChildren()) {
                                                     final Long getMessageKey = Long.valueOf(chatDataSnapshot.child("timestamp").getValue(String.class));
-                                                    Long getLastSeenMessage = Long.valueOf(getMessageKey);
+                                                    Long getLastSeenMessage = Long.valueOf(getMessageKey)-1;
                                                     LastNode[0] = getLastSeenMessage;
                                                     try {
                                                         getLastSeenMessage = Long.valueOf(MemoryData.getLastMsgTs(getContext(), getKey));
                                                     } catch (Exception e) {
-                                                        getLastSeenMessage = getMessageKey;
+                                                        getLastSeenMessage = getMessageKey-1;
                                                         LastMessageIfNotSaved = String.valueOf(getMessageKey);
                                                         savedChatId = getKey;
                                                     }
@@ -445,9 +550,12 @@ public class BlankFragment extends Fragment {
 
     @Override
     public void onPause() {
-        super.onPause();
-//        onDestroy();
 //        onResume();
+        super.onPause();
+
+//        super.onPause();
+//        onDestroy();
+        onResume();
     }
     private Context fragmentContext;
 
@@ -467,45 +575,76 @@ public class BlankFragment extends Fragment {
         // Optionally set other properties for the Dialog, e.g., size, title, etc.
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        dialog.setTitle("Your Dialog Title");
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        dialog.getWindow().setGravity(Gravity.TOP);
         EditText searchUserName=dialog.findViewById(R.id.searchUserName);
         ImageView search=dialog.findViewById(R.id.search);
         TextView sendRequest=dialog.findViewById(R.id.sendRequest);
+        TextView warning=dialog.findViewById(R.id.warning);
+        warning.setVisibility(View.GONE);
         sendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userName=searchUserName.getText().toString();
-                if(!userName.isEmpty()){
-                    databaseReference.child("Users").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for(DataSnapshot snapshot1:snapshot.getChildren()){
-                                if(snapshot1.child("Name").getValue().equals(userName)){
-                                    databaseReference.child(snapshot1.getKey()).child("FrndReq").child(mobile).child("Name").setValue(myName);
-                                    databaseReference.child(mobile).child("ProfilePic").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            databaseReference.child(snapshot1.getKey()).child("FrndReq").child(mobile).child("profilePic").setValue(snapshot.getValue(String.class));
-                                        }
+//                String userName=searchUserName.getText().toString();
+//                if(!userName.isEmpty() && !userName.equals(myName)){
+//                    databaseReference.child("Users").addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            final int[] check = {0};
+//                            for(DataSnapshot snapshot1:snapshot.getChildren()){
+//                                if(snapshot1.child("Name").getValue().equals(userName)){
+//                                    databaseReference.child(mobile).child("contacts").child(snapshot1.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                        @Override
+//                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                            if(snapshot.exists()){
+//                                                Toast.makeText(getContext(),"Already a friend.",Toast.LENGTH_SHORT).show();
+//                                                dialog.dismiss();
+//
+//                                            }else{
+//                                                databaseReference.child(snapshot1.getKey()).child("FrndReq").child(mobile).child("Name").setValue(myName);
+//
+//                                                databaseReference.child(mobile).child("ProfilePic").addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                    @Override
+//                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                        databaseReference.child(snapshot1.getKey()).child("FrndReq").child(mobile).child("profilePic").setValue(snapshot.getValue(String.class));
+//                                                    }
+//
+//                                                    @Override
+//                                                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                                    }
+//                                                });
+//
+//
+//
+//                                                check[0] =1;
+//                                                Toast.makeText(getContext(),"Request sent",Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        }
+//
+//                                        @Override
+//                                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                        }
+//                                    });
+//                                    dialog.dismiss();
+//                                    break;
+//                                }
+//                            }
+//                            if(check[0]==0){
+//                                warning.setVisibility(View.VISIBLE);
+//                                warning.setText("Warning : User does not exist.");
+//                                searchUserName.setText("");
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
+//                }else Toast.makeText(getContext(),"Enter a Valid user name",Toast.LENGTH_SHORT).show();
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    });
-                                    dialog.dismiss();
-                                    break;
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }else Toast.makeText(getContext(),"Enter a Valid user name",Toast.LENGTH_SHORT).show();
-
+                MainActivity.sendRequest(searchUserName,getContext(),warning,dialog);
             }
 
         });
@@ -583,4 +722,220 @@ public class BlankFragment extends Fragment {
     }
 
 
+    public void getStatus(View view){
+         statusList = new ArrayList<>();
+         List<StatusState> statusState=MainActivity.statusState;
+        long currTime=System.currentTimeMillis();
+
+        recyclerView = view.findViewById(R.id.recyclerView);
+
+        valueEventListener=databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                statusList.clear();
+//                Log.i("checkingxxx",snapshot.child(mobile).child("Status").child("MyStatus").child("1").getValue(String.class)+"aa");
+
+                for(DataSnapshot snapshot1:snapshot.child(mobile).child("Status").child("MyStatus").getChildren()){
+                    Mystatus=snapshot1.child("statusImage").getValue(String.class);
+
+//                    Log.i("testingThis",Mystatus);
+                    long time=currTime;
+                    try {
+                        time=snapshot1.child("statusTime").getValue(Long.class);
+                    }catch (Exception e){};
+                    long timeDifferenceMillis=currTime-time;
+                    if(timeDifferenceMillis<= TimeUnit.DAYS.toMillis(1)) {
+                    try{
+                        Glide.with(requireContext())
+                                .load(Mystatus)
+                                .listener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, com.bumptech.glide.request.target.Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        RoundedBitmapDrawable circularDrawable = RoundedBitmapDrawableFactory.create(getResources(), ((BitmapDrawable) resource).getBitmap());
+                                        circularDrawable.setCircular(true);
+                                        my_story.setImageDrawable(circularDrawable);
+
+                                        return true;
+                                    }
+                                })
+                                .into(my_story);
+                    }catch (Exception e){}}
+                    else{
+                        FirebaseStorage storage=FirebaseStorage.getInstance();
+                        StorageReference deleter=storage.getReference().child("Status").child(mobile).child(snapshot1.getKey());
+                        deleter.delete();
+                    }
+
+//                    Picasso.get().load(Mystatus).into(my_story);
+
+                    break;
+                }
+
+                for(DataSnapshot snapshot1:snapshot.child(mobile).child("Status").child("Others").getChildren()){
+                    for(DataSnapshot dataSnapshot:snapshot.child(Objects.requireNonNull(snapshot1.getKey())).child("Status").child("MyStatus").getChildren()){
+                        long time=currTime;
+                        try{
+                            time=dataSnapshot.child("statusTime").getValue(Long.class);
+                        }catch (Exception e){};
+
+                        long timeDifferenceMillis=currTime-time;
+//                        if(timeDifferenceMillis<= TimeUnit.DAYS.toMillis(1)) {
+                            String imageUrl=dataSnapshot.child("statusImage").getValue(String.class);
+                            DataSnapshot ref = snapshot.child(mobile).child("contacts").child(snapshot1.getKey());
+                            String Name = ref.child("Name").getValue(String.class);
+                            String chatId = ref.child("ChatId").getValue(String.class);
+                            boolean viewed=false;
+                            if(Objects.requireNonNull(snapshot1.child("viewed").getValue(String.class)).equals("No")) viewed=true;
+                            statusList.add(0, new StatusModel(imageUrl, Name, snapshot1.getKey(), chatId,viewed));
+//                        Log.i("checkingxxx",Name);
+                            break;
+//                        }
+                    }
+
+                }
+                Container.statusList=statusList;
+                adapter = new StatusAdapter(statusList,getContext());
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                recyclerView.setAdapter(adapter);
+
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+
+    // uploading status ---------------------------------------------->
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(data!=null && data.getData()!=null && requestCode==1 && resultCode==RESULT_OK){
+            filepath=data.getData();
+            try{
+                InputStream inputStream=context.getContentResolver().openInputStream(filepath);
+                bitmap= BitmapFactory.decodeStream(inputStream);
+                String fileName = "profile_picture.jpg";
+                my_story.setImageBitmap(bitmap);
+
+                uploadtofirebase();
+//                SharedPreferences prefs = getApplicationContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = prefs.edit();
+//                editor.putString("profile_picture_path", getApplicationContext().getFilesDir() + "/" + fileName);
+//                editor.apply();
+//                Mydp=findViewById(R.id.Mydp);
+//                Mydp.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    public void uploadtofirebase(){
+//        ProgressDialog dialog=new ProgressDialog(this);
+//        dialog.setTitle("File Uploader");
+//        dialog.show();
+        DatabaseReference ref=databaseReference.child(mobile).child("Status").child("MyStatus").push();
+        String imageId=ref.getKey();
+        FirebaseStorage storage=FirebaseStorage.getInstance();
+        StorageReference uploader=storage.getReference().child("Status").child(mobile).child(imageId);
+        if(filepath!=null){
+            uploader.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                if (!Login.this.isFinishing() && dialog != null) {
+//                dialog.dismiss();
+//                }
+                    uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String statusUrl=uri.toString();
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    ref.child("statusImage").setValue(statusUrl);
+                                    ref.child("statusTime").setValue(System.currentTimeMillis());
+//                                    String StatusId=newStatusRef.getKey();
+//                                    newStatusRef.setValue(statusUrl);
+                                    Toast.makeText(getContext(),"Uploading your status.",Toast.LENGTH_SHORT).show();
+                                    for(DataSnapshot dataSnapshot:snapshot.child(mobile).child("contacts").getChildren()){
+//                                        databaseReference.child("Status").child("Others").child(mobile).
+                                        databaseReference.child(Objects.requireNonNull(dataSnapshot.getKey())).child("Status").child("Others").child(mobile).child("viewed").setValue("No");
+//                                        databaseReference.child(dataSnapshot.getKey()).child("Status").child("Others").child(mobile).setValue("");
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(getContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+                                }
+                            });
+//                        profilePicLink=uri.toString();
+//                        Toast.makeText(getApplicationContext(),profilePicLink,Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                    Toast.makeText(getContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+//                float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
+//                dialog.setMessage("Uploaded :"+(int)percent+" %");
+                }
+            });
+        }
+    }
+
+    public void ImportContactsDialog() {
+        // Create a Dialog instance
+        Dialog dialog = new Dialog(getContext());
+
+        // Set the layout for the Dialog
+        dialog.setContentView(R.layout.import_contacts);
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+
+        // Optionally set other properties for the Dialog, e.g., size, title, etc.
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        dialog.setTitle("Your Dialog Title");
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        TextView importContacts=dialog.findViewById(R.id.Import);
+        importContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"Importing contacts",Toast.LENGTH_SHORT).show();
+                checkAndRequestContactsPermission();
+                dialog.dismiss();
+            }
+        });
+        // Show the Dialog
+        dialog.show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getStatus(view1);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        databaseReference.removeEventListener(valueEventListener);
+    }
 }

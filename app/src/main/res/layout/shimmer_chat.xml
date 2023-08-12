@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:id="@+id/oppoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:id="@+id/oppoMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent message"
+                android:textColor="@android:color/transparent" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20sp"
+                android:fontFamily="@font/open_sans"
+                android:id="@+id/myMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/shimmer_chat_right"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message"
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent message"
+                android:textColor="@android:color/transparent" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/open_sans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message"
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginStart="20sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/shimmer_chat_right"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message"
+                android:textColor="@android:color/transparent" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent"
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent message"
+                android:textColor="@android:color/transparent"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/shimmer_chat_right"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message"
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/shimmer_chat_right"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message                  "
+                android:textColor="@android:color/transparent" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent"
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+
+
+            <TextView
+                android:layout_marginStart="20sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/shimmer_chat_right"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message"
+                android:textColor="@android:color/transparent" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent message"
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent"
+                android:textColor="@android:color/transparent" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/shimmer_chat_right"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message"
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent message"
+                android:textColor="@android:color/transparent"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/shimmer_chat_right"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message        "
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:fontFamily="@font/open_sans"
+                android:paddingHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_chat_left"
+                android:paddingVertical="5dp"
+                android:text="This is opponent"
+                android:textColor="@android:color/transparent" />
+
+            <TextView
+                android:layout_marginStart="20sp"
+                android:fontFamily="@font/open_sans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/shimmer_chat_right"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="This is my message"
+                android:textColor="@android:color/transparent" />
+
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>
