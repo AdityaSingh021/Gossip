@@ -5,10 +5,10 @@ import android.graphics.Bitmap;
 public class MessagesList {
     private String name, mobile,lastMessage,chatKey;
     private Long LastNode;
-    private Bitmap profilePic;
+    private String profilePic;
     private int unseenMessages;
 
-    public MessagesList(String name, String mobile, String textMessage, Bitmap profilePic , int unseenMessages, String chatKey, Long LastNode) {
+    public MessagesList(String name, String mobile, String textMessage, String profilePic , int unseenMessages, String chatKey, Long LastNode) {
         this.name = name;
         this.mobile = mobile;
         this.lastMessage = textMessage;
@@ -53,11 +53,11 @@ public class MessagesList {
         return chatKey;
     }
 
-    public Bitmap getProfilePic() {
+    public String getProfilePic() {
         return profilePic;
     }
 
-    public void setProfilePic(Bitmap profilePic) {
+    public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
 
@@ -65,3 +65,5 @@ public class MessagesList {
         this.name = name;
     }
 }
+
+//https://firebasestorage.googleapis.com/v0/b/goss-p-dc95b.appspot.com/o/ProfilePictures%2F9818514406?alt=media&token=78d108c2-5fab-48c6-906c-8f8957fa4d21

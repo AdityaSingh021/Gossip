@@ -16,10 +16,10 @@
         android:textStyle="bold"
         android:fontFamily="@font/open_sans"
         android:text="Import contacts"
-        android:textSize="15sp"
+        android:textSize="15dp"
         android:textColor="@color/white"/>
     <TextView
-
+        android:id="@+id/Note"
         android:layout_marginTop="10sp"
         android:layout_below="@+id/Import"
         android:layout_centerHorizontal="true"
@@ -27,8 +27,21 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans"
         android:text="Note: Only registered users will be imported."
-        android:textSize="12sp"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        android:textColor="#CEC7BF"/>
+    <TextView
+        android:layout_marginTop="10sp"
+        android:layout_below="@+id/Note"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans"
+        android:layout_marginHorizontal="10dp"
+        android:text="Your contact information will not be transferred to our server; it will solely serve the purpose of facilitating connections with existing users."
+        android:textSize="12dp"
         android:textStyle="bold"
         android:layout_marginBottom="20sp"
-        android:textColor="#CEC7BF"/>
+        android:textColor="#90FFFFFF"/>
 </RelativeLayout>

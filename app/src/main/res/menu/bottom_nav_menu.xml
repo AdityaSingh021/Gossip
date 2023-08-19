@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/Notification"
-        android:icon="@drawable/notification"
+        android:icon="@drawable/notification_icon"
         android:title="Notification" />
 
 <!--    <item-->

@@ -353,6 +353,7 @@ public class RandomChat extends Fragment {
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     String text = enter_tags.getText().toString().trim();
+                    if(text.charAt(0)=='#') text=text.substring(1);
                     if (!text.isEmpty()) {
                         addTextToFlowLayout("#" + text, flexboxLayout);
 

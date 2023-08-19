@@ -1,21 +1,34 @@
 package com.example.gossip.chat;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,8 +37,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.L;
+import com.example.gossip.AccountSettings;
 import com.example.gossip.BlankFragment;
 import com.example.gossip.ContactChats;
+import com.example.gossip.Container;
 import com.example.gossip.HomeActivity;
 import com.example.gossip.MainActivity;
 import com.example.gossip.MemoryData;
@@ -35,24 +50,40 @@ import com.example.gossip.StartRandomChat;
 import com.example.gossip.messages.MessagesAdapter;
 import com.example.gossip.messages.MessagesList;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.siddydevelops.customlottiedialogbox.CustomLottieDialog;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.Key;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.douglasjunior.androidSimpleTooltip.SimpleTooltip;
@@ -65,12 +96,23 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Chat extends AppCompatActivity {
+
+    public Uri filepath;
+    private ImageView camera;
+    private Bitmap bitmap;
+    private static final int PERMISSION_REQUEST_CODE = 123;
+    private static final int GALLERY_REQUEST_CODE = 456;
+    private static final String ALGORITHM = "AES";
+    private static final String SECRET_KEY = "YourSecretKey"; // Replace with a secure key
+    private static final String CHARSET = "UTF-8";
+    private boolean Condition=true;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://goss-p-dc95b-default-rtdb.firebaseio.com/");
     //    public boolean check;
     private int check1;
 
     ValueEventListener valLis1;
     private ImageView back;
+    private String getMobile;
     boolean State;
     ShimmerFrameLayout shimmerFrameLayout;
     private EditText message;
@@ -108,6 +150,14 @@ public class Chat extends AppCompatActivity {
         final ImageView sendButton = findViewById(R.id.sendBtn);
         TextView Status = findViewById(R.id.Status);
         chattingRecyclerView = findViewById(R.id.chattingRecyclerView);
+        camera=findViewById(R.id.camera);
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkAndOpenGallery();
+            }
+        });
+//        databaseReference.child("Users").child(mobile).child("State").setValue(1);
 //        TextView info=findViewById(R.id.information);
 //        databaseReference.child("Users").child(mobile).child("State").setValue(1);
         // data from message adapter
@@ -127,7 +177,7 @@ public class Chat extends AppCompatActivity {
 //                .show();
         CircleImageView profilePic=findViewById(R.id.profilePic);
         chatKey = getIntent().getStringExtra("chat_key");
-        final String getMobile = getIntent().getStringExtra("mobile");
+        getMobile = getIntent().getStringExtra("mobile");
         //get user mobile from memory
         getUserMobile = MemoryData.getData(Chat.this);
 
@@ -140,6 +190,7 @@ public class Chat extends AppCompatActivity {
         RelativeLayout topBar = findViewById(R.id.topBar);
         shimmerFrameLayout=findViewById(R.id.shimmer);
         shimmerFrameLayout.startShimmer();
+
 //        Toast.makeText(getApplicationContext(),getMobile,Toast.LENGTH_SHORT).show();
 //        String profilePicFromNotif=getIntent().getStringExtra("profilePic");
 
@@ -147,46 +198,36 @@ public class Chat extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                finish();
                 onBackPressed();
             }
         });
         final int minimumHeight = 0;
-        valLis1=databaseReference.child("Users").child(getMobile).child("State").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try{
-                    if((long)(snapshot.getValue())==Long.valueOf(0)){
-                        Status.setText("Offline");
-                        Status.setTextColor(Color.parseColor("#cb7d67"));
-                    }else{
-                        Status.setText("Online");
-                        Status.setTextColor(Color.parseColor("#94E8B4"));
-                    }
-                }catch (Exception e){};
+        try{
+            valLis1=databaseReference.child("Users").child(getMobile).child("State").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    try{
+                        if((long)(snapshot.getValue())==Long.valueOf(0)){
+                            Status.setText("Offline");
+                            Status.setTextColor(Color.parseColor("#cb7d67"));
+                        }else{
+                            Status.setText("Online");
+                            Status.setTextColor(Color.parseColor("#94E8B4"));
+                        }
+                    }catch (Exception e){};
 
+                }
 
-//                if(var[0] ==0){
-//
-//                    myUserNameInOthersContact=snapshot.child(getMobile).child("contacts").child(getUserMobile).child("Name").getValue(String.class);
-//                    otherUserFcmToken=snapshot.child("Users").child(getMobile).child("fcmToken").getValue(String.class);
-//                    String dp=snapshot.child(getMobile).child("profilePic").getValue(String.class);
-//                    if(dp!=null){
-//                        Picasso.get()
-//                                .load(dp)
-//                                .placeholder(R.drawable.default_user) // Placeholder image while loading
-//                                .error(R.drawable.default_user) // Error image if the URL is invalid
-//                                .into(profilePic);
-//                    }
-//                    var[0] =1;
-//                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
+                }
+            });
+        }catch (Exception e){
+            databaseReference.child("Users").child(getMobile).child("State").setValue(0);
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 //        chattingRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            private boolean isScrolling = false;
@@ -277,9 +318,11 @@ public class Chat extends AppCompatActivity {
 
         chattingRecyclerView.setLayoutManager(new LinearLayoutManager(Chat.this));
         chattingRecyclerView.hasFixedSize();
-        mValueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                chatLists.clear();
+
                 if (chatKey.isEmpty()) {
                     // generate chat key
                     chatKey = "1";
@@ -292,15 +335,16 @@ public class Chat extends AppCompatActivity {
                 if(var[0] ==0){
 
                     if(cond[0]) {
-                        databaseReference.child("Users").child(mobile).child("State").setValue(1);
+//                        databaseReference.child("Users").child(mobile).child("State").setValue(1);
                         cond[0] =false;
                     }
                     myUserNameInOthersContact=snapshot.child(getMobile).child("contacts").child(getUserMobile).child("Name").getValue(String.class);
                     otherUserFcmToken=snapshot.child("Users").child(getMobile).child("fcmToken").getValue(String.class);
                     String dp=snapshot.child(getMobile).child("profilePic").getValue(String.class);
-                    if(dp!=null){
+                    if(dp!=null && !dp.isEmpty()){
                         Picasso.get()
                                 .load(dp)
+                                .error(R.drawable.default_user)
                                 .placeholder(R.drawable.default_user) // Placeholder image while loading
                                 .error(R.drawable.default_user) // Error image if the URL is invalid
                                 .into(profilePic);
@@ -311,38 +355,69 @@ public class Chat extends AppCompatActivity {
 //                }
 
 
-                if (snapshot.child(mobile).hasChild("chat")) {
-                    if (snapshot.child(mobile).child("chat").child(chatKey).hasChild("messages")) {
-                        chatLists.clear();
-                        for (DataSnapshot messagesSnapshot : snapshot.child(mobile).child("chat").child(chatKey).child("messages").getChildren()) {
-                            if (messagesSnapshot.hasChild("msg") && messagesSnapshot.hasChild("mobile")) {
-                                final String messageTimeStamp = messagesSnapshot.child("timestamp").getValue(String.class);
-                                final String Mobile = messagesSnapshot.child("mobile").getValue(String.class);
-                                final String getMsg = messagesSnapshot.child("msg").getValue(String.class);
+                databaseReference.child(mobile).child("chat").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        if (snapshot.child(mobile).hasChild("chat")) {
+                            if (snapshot.child(chatKey).hasChild("messages")) {
+                                chatLists.clear();
+                                for (DataSnapshot messagesSnapshot : snapshot.child(chatKey).child("messages").getChildren()) {
+                                    if (messagesSnapshot.hasChild("msg") && messagesSnapshot.hasChild("mobile")) {
+
+                                        final String messageTimeStamp = messagesSnapshot.child("timestamp").getValue(String.class);
+                                        final String Mobile = messagesSnapshot.child("mobile").getValue(String.class);
+                                        final String getMsg = messagesSnapshot.child("msg").getValue(String.class);
 
 
-                                Timestamp timestamp = new Timestamp(Long.parseLong(messageTimeStamp));
-                                Date date = new Date(timestamp.getTime());
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
-                                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-                                chatList chatList = new chatList(Mobile, getName, getMsg, simpleDateFormat.format(date), simpleTimeFormat.format(date));
-                                chatLists.add(chatList);
 
+                                        Timestamp timestamp = new Timestamp(Long.parseLong(messageTimeStamp));
+                                        Date date = new Date(timestamp.getTime());
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
+                                        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                        chatList chatList = new chatList(Mobile, getName, getMsg, simpleDateFormat.format(date), simpleTimeFormat.format(date),chatKey,messagesSnapshot.getKey(),false);
+                                        chatLists.add(chatList);
 
 //                                    if(check || Long.parseLong(messageTimeStamp)>Long.parseLong(MemoryData.getLastMsgTs(Chat.this,chatKey))){
-                                check = false;
-                                MemoryData.saveLastMsgTs(messageTimeStamp, chatKey, getApplicationContext());
-                                chatAdapter.updateChatList(chatLists);
-                                chattingRecyclerView.scrollToPosition(chatLists.size() - 1);
+                                        check = false;
+                                        MemoryData.saveLastMsgTs(messageTimeStamp, chatKey, getApplicationContext());
+
 
 //                                    }
-                            }
+                                    }else if(messagesSnapshot.hasChild("imageUrl") && messagesSnapshot.hasChild("mobile")){
+                                        final String messageTimeStamp = messagesSnapshot.child("timestamp").getValue(String.class);
+                                        final String Mobile = messagesSnapshot.child("mobile").getValue(String.class);
+                                        final String getUrl = messagesSnapshot.child("imageUrl").getValue(String.class);
 
-                        }
+
+
+                                        Timestamp timestamp = new Timestamp(Long.parseLong(messageTimeStamp));
+                                        Date date = new Date(timestamp.getTime());
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
+                                        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                        chatList chatList = new chatList(Mobile, getName, getUrl, simpleDateFormat.format(date), simpleTimeFormat.format(date),chatKey,messagesSnapshot.getKey(),true);
+                                        chatLists.add(chatList);
+
+//                                    if(check || Long.parseLong(messageTimeStamp)>Long.parseLong(MemoryData.getLastMsgTs(Chat.this,chatKey))){
+                                        check = false;
+                                        MemoryData.saveLastMsgTs(messageTimeStamp, chatKey, getApplicationContext());
+                                    }
+
+                                }
+                                chatAdapter.updateChatList(chatLists);
+                                chattingRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
+                            }
+//                        }
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
                     }
-                }
-                shimmerFrameLayout.stopShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
 
             }
 
@@ -357,17 +432,26 @@ public class Chat extends AppCompatActivity {
             public void onClick(View v) {
 //                Toast.makeText(getApplicationContext(),"Inside",Toast.LENGTH_SHORT).show();
                 ReportDialog reportDialog=new ReportDialog();
-                reportDialog.openCenteredDialog(Chat.this,"User reported.","Report user");
+                reportDialog.openCenteredDialog(Chat.this,"User reported.","Report user",false,"");
             }
         });
         sendButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 final String getTxtMessage = message.getText().toString();
 
                 // get current Timestamp
+//                String encryptedMsg="";
+//                try {
+//                    encryptedMsg=encrypt(getTxtMessage);
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                    Toast.makeText(get)
+//                }
 
-                sendMessage(getTxtMessage,getMobile,getUserMobile,chatKey,message);
+                if(!getTxtMessage.isEmpty()) sendMessage(getTxtMessage,getMobile,getUserMobile,chatKey,message);
+
             }
         });
     }
@@ -534,12 +618,211 @@ public class Chat extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         databaseReference.removeEventListener(valLis1);
-
+//        View view = getCurrentFocus();
+//        if (view != null) {
+//            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//        }
+        if(Condition) databaseReference.child("Users").child(Container.getMobile()).child("State").setValue(0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         databaseReference.removeEventListener(valLis1);
+        if(Condition) databaseReference.child("Users").child(Container.getMobile()).child("State").setValue(1);
+        Condition=true;
     }
+
+
+//    <------------- Encryption ---------------->
+
+
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public static String encrypt(String plainText) throws Exception {
+//        Key key = generateKey();
+//        Cipher cipher = Cipher.getInstance(ALGORITHM);
+//        cipher.init(Cipher.ENCRYPT_MODE, key);
+//        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(CHARSET));
+//        return Base64.getEncoder().encodeToString(encryptedBytes);
+//    }
+//
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public static String decrypt(String encryptedText) throws Exception {
+//        Key key = generateKey();
+//        Cipher cipher = Cipher.getInstance(ALGORITHM);
+//        cipher.init(Cipher.DECRYPT_MODE, key);
+//        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
+//        return new String(decryptedBytes, CHARSET);
+//    }
+//
+//    private static Key generateKey() throws Exception {
+//        byte[] keyBytes = SECRET_KEY.getBytes(CHARSET);
+//        return new SecretKeySpec(keyBytes, ALGORITHM);
+//    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Condition=false;
+    }
+
+    private void checkAndOpenGallery() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+                == PackageManager.PERMISSION_GRANTED) {
+            openGallery();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE);
+        }
+//        chatAdapter.updateChatList(chatLists);
+    }
+    private void openGallery() {
+//        Intent i=new Intent(Intent.ACTION_PICK);
+//        i.setType("image/*");
+//        startActivityForResult(Intent.createChooser(i,"Please select Image"),GALLERY_REQUEST_CODE);
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                Toast.makeText(this, "Permission denied. Cannot open gallery.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        filepath=null;
+        if(data!=null && data.getData()!=null && requestCode==GALLERY_REQUEST_CODE && resultCode==RESULT_OK){
+            filepath=data.getData();
+            try{
+                InputStream inputStream=getApplicationContext().getContentResolver().openInputStream(filepath);
+                bitmap= BitmapFactory.decodeStream(inputStream);
+                String fileName = "profile_picture.jpg";
+                Log.i("steps","1");
+
+                uploadtofirebase();
+            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+                Log.i("steps","failed");
+            }
+        }
+        Log.i("steps","faileddd");
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    public void uploadtofirebase(){
+//        ProgressDialog dialog=new ProgressDialog(this);
+//        dialog.setTitle("File Uploader");
+//        dialog.show();
+        Log.i("steps","2");
+        CustomLottieDialog customLottieDialog = new CustomLottieDialog(Chat.this, R.raw.animation_loading);
+        customLottieDialog.setLottieBackgroundColor("#000000");
+        customLottieDialog.setDialogLayoutDimensions(100, 100);
+        customLottieDialog.show();
+
+        DatabaseReference ref=databaseReference.child(mobile).child("chat").child(chatKey).child("messages").push();
+        String imageId=ref.getKey();
+        FirebaseStorage storage=FirebaseStorage.getInstance();
+        StorageReference uploader=storage.getReference().child("chatImages").child(imageId);
+        if(filepath!=null){
+            Log.i("steps","3");
+            uploader.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.i("steps","success");
+//                if (!Login.this.isFinishing() && dialog != null) {
+//                dialog.dismiss();
+//                }
+                    uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String statusUrl=uri.toString();
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                    if(chatKey==null){
+//                                        for(DataSnapshot dataSnapshot:snapshot.child(getUserMobile).child("chat").getChildren()){
+//
+//                                        }
+//                                    }
+                                    ref.child("imageUrl").setValue(statusUrl);
+                                    ref.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
+                                    ref.child("mobile").setValue(mobile);
+                                    DatabaseReference reference=databaseReference.child(getMobile).child("chat").child(chatKey).child("messages");
+                                    reference.child(imageId).child("imageUrl").setValue(statusUrl);
+                                    reference.child(imageId).child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
+                                    reference.child(imageId).child("mobile").setValue(mobile);
+//                                    String StatusId=newStatusRef.getKey();
+//                                    newStatusRef.setValue(statusUrl);
+                                    Toast.makeText(getApplicationContext(),"Sending image",Toast.LENGTH_SHORT).show();
+//                                    for(DataSnapshot dataSnapshot:snapshot.child(mobile).child("contacts").getChildren()){
+////                                        databaseReference.child("Status").child("Others").child(mobile).
+//                                        databaseReference.child(Objects.requireNonNull(dataSnapshot.getKey())).child("Status").child("Others").child(mobile).child("viewed").setValue("No");
+////                                        databaseReference.child(dataSnapshot.getKey()).child("Status").child("Others").child(mobile).setValue("");
+//                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+                                }
+                            });
+//                        profilePicLink=uri.toString();
+//                        Toast.makeText(getApplicationContext(),profilePicLink,Toast.LENGTH_SHORT).show();
+
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            filepath=null;
+                        }
+                    });
+                    Log.i("steps","5");
+//                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
+                    customLottieDialog.dismiss();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.i("failureMessage",e.getMessage());
+                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+//    private String getChatKey() {
+//        final String[] result = {""};
+//        databaseReference.child(getUserMobile).child("chat").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                boolean check=true;
+//                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+//                    if(dataSnapshot.child("user_2").equals(mobile) || dataSnapshot.child("user_1").equals(mobile)){
+//                        result[0] =dataSnapshot.getKey();
+//                        break;
+//                    }
+//                }
+//                if(check){
+//                    databaseReference.child(getUserMobile).child("chat").push();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
 }

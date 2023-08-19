@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,9 +22,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.gossip.HomeActivity;
 import com.example.gossip.MainActivity;
 import com.example.gossip.MemoryData;
@@ -62,7 +72,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.MyViewHolder holder, int position) {
         MessagesList list2=messagesLists.get(position);
-        Bitmap bitmap=MemoryData.getProfilePicture(list2.getMobile(), context.getApplicationContext());
+//        Bitmap bitmap=MemoryData.getProfilePicture(list2.getMobile(), context.getApplicationContext());
 //        Log.i("myList",list2.getMobile()+" "+position+"   "+messagesLists.size());
 //        if(bitmap!=null){
 //            Log.i("myList","andar hu");
@@ -73,17 +83,45 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 //        for(int i=0;i<messagesLists.size();i++){
 //            Log.i("hdmi345",messagesLists.get(i).getMobile()+" "+messagesLists.get(i).getProfilePic()+" "+i);
 //        }
+        holder.profilePic.setImageResource(R.drawable.default_user);
+        if(list2.getProfilePic()!=null && !list2.getProfilePic().isEmpty()){
+            Glide.with(context)
+                    .load(list2.getProfilePic())
+                    .error(R.drawable.default_user)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
 
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, com.bumptech.glide.request.target.Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            RoundedBitmapDrawable circularDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), ((BitmapDrawable) resource).getBitmap());
+                            circularDrawable.setCircular(true);
+                            holder.profilePic.setImageDrawable(circularDrawable);
 
-        if(bitmap!=null){
-//            Log.i("hdmi345",position+"  "+list2.getMobile()+"  "+list2.getLastNode());
-            holder.profilePic.setImageBitmap(bitmap);
-        }else{
+                            return true;
+                        }
+                    })
+                    .into(holder.profilePic);
+        }
+//        if(bitmap!=null){
+////            Log.i("hdmi345",position+"  "+list2.getMobile()+"  "+list2.getLastNode());
+//            holder.profilePic.setImageBitmap(bitmap);
+//        }
+        else{
             holder.profilePic.setImageResource(R.drawable.default_user);
         }
         if(list2.getName()!=null && list2.getName().isEmpty()) list2.setName(list2.getMobile());
         holder.name.setText(list2.getName());
-        holder.lastMessage.setText(list2.getlastMessage());
+        String text=list2.getlastMessage();
+        if(text!=null && !text.isEmpty()) {
+            String lastmsg=shorten(list2.getlastMessage());
+            holder.lastMessage.setText(lastmsg);
+        }
+
+
+
 
 
         long currentTimeStamp=System.currentTimeMillis();
@@ -125,7 +163,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
                         .setMessage("Are you sure you want to delete this chat?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                databaseReference.child(MemoryData.getData(context.getApplicationContext())).child("chat").child(list2.getChatKey()).child("messages").removeValue();
+                                databaseReference.child(MemoryData.getData(context.getApplicationContext())).child("chat").child(list2.getChatKey()).child("messages").setValue("");
                                 // User clicked yes button
                             }
                         })
@@ -203,5 +241,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             updateData(filteredData);
         }
 
+    }
+    public String shorten(String text){
+            if (text.length() > 28) {
+                text = text.substring(0, 28) + "...";
+                return text;
+            } else return text;
     }
 }

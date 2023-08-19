@@ -7,6 +7,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +28,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -34,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
@@ -49,11 +53,13 @@ import com.example.gossip.Status.StatusState;
 import com.example.gossip.messages.MessagesAdapter;
 import com.example.gossip.messages.MessagesList;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,6 +67,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.util.Log;
@@ -95,9 +102,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class BlankFragment extends Fragment {
 
+    ProgressBar progressBar;
+    ValueEventListener valListener;
     ShimmerFrameLayout shimmerFrameLayout;
 
     ValueEventListener valueEventListener;
+    ImageView myStatusState;
     View view1;
     private RecyclerView recyclerView;
     private StatusAdapter adapter;
@@ -119,6 +129,7 @@ public class BlankFragment extends Fragment {
     String lastMsg;
     private String lastMessage="";
     private int unseenMessages=0;
+    SwipeRefreshLayout swipeRefreshLayout;
     com.example.gossip.EarthView global;
     private String chatKey="";
     CircleImageView my_story;
@@ -251,9 +262,13 @@ public class BlankFragment extends Fragment {
         messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         messagesAdapter=new MessagesAdapter(messagesLists,getContext());
         messagesRecyclerView.setAdapter(messagesAdapter);
+        myStatusState=view.findViewById(R.id.MyStatusState);
         shimmerFrameLayout.startShimmer();
+
+
         SharedPreferences sharedPreferences = context.getSharedPreferences("MyAuthenticationId",MODE_PRIVATE);
         myName=sharedPreferences.getString("name","Unknown");
+//        progressBar.setVisibility(View.VISIBLE);
 
         androidx.appcompat.widget.SearchView searchView=view.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
@@ -285,6 +300,19 @@ public class BlankFragment extends Fragment {
 //        });
         information=view.findViewById(R.id.information);
         information.setVisibility(View.INVISIBLE);
+
+
+        swipeRefreshLayout = view.findViewById(R.id.myFragment);
+        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                databaseReference.addValueEventListener(valListener);
+                getStatus(my_story);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         my_story.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,45 +362,41 @@ public class BlankFragment extends Fragment {
                 messagesAdapter.updateData(retrievedList);
             }
         }
-
         addStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dexter.withContext(getContext())
-                        .withPermission(Manifest.permission.CAMERA)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-//                                Toast.makeText(getContext(),"Permission granted",Toast.LENGTH_SHORT).show();
-                                Intent i=new Intent(Intent.ACTION_PICK);
-                                i.setType("image/*");
-                                startActivityForResult(Intent.createChooser(i,"Please select Image"),1);
 
-                            }
+                if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
 
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_MEDIA_IMAGES)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        Intent i = new Intent(Intent.ACTION_PICK);
+                        i.setType("image/*");
+                        startActivityForResult(Intent.createChooser(i, "Please select Image"), 1);
+//                    openGallery();
+                    } else {
+//                        Toast.makeText(getContext(),"13asdad",Toast.LENGTH_SHORT).show();
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                                123);
+                    }
+                }else{
 
-                                if(permissionDeniedResponse.isPermanentlyDenied()) {
-//                                    Log.i("permissionProblem", permissionDeniedResponse.toString());
-//                                    Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//                                    Uri uri = Uri.fromParts("package", context.getPackageName(), null);
-//                                    intent.setData(uri);
-//                                    startActivity(intent);
-//                                    Toast.makeText(getContext(),"Permission granted",Toast.LENGTH_SHORT).show();
-                                    Intent i=new Intent(Intent.ACTION_PICK);
-                                    i.setType("image/*");
-                                    startActivityForResult(Intent.createChooser(i,"Please select Image"),1);
-                                }
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        Intent i = new Intent(Intent.ACTION_PICK);
+                        i.setType("image/*");
+                        startActivityForResult(Intent.createChooser(i, "Please select Image"), 1);
+//                    openGallery();
+                    } else {
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                123);
+                    }
 
-//                                Toast.makeText(getContext(),"Permission denied",Toast.LENGTH_SHORT).show();
-                            }
+                }
 
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                                permissionToken.continuePermissionRequest();
-                            }
-                        }).check();
+
             }
         });
 
@@ -416,7 +440,7 @@ public class BlankFragment extends Fragment {
 
         view1=view;
         if (activity!=null && isAdded()) {
-            databaseReference.addValueEventListener(new ValueEventListener() {
+            valListener=databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot1) {
 
@@ -434,45 +458,47 @@ public class BlankFragment extends Fragment {
                                 unseenMessages = 0;
                                 lastMessage = "";
                                 chatKey = "";
-                                Log.i("mno", "4");
+//                                Log.i("mno", "4");
                                 for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                                    Log.i("mno", "5");
+//                                    Log.i("mno", "5");
                                     final String getKey = dataSnapshot1.getKey();
                                     chatKey = getKey;
                                     final String getmobile = snapshot.child(chatKey).child("user_2").getValue(String.class);
                                     String getName = snapshot1.child(mobile).child("contacts").child(getmobile).child("Name").getValue(String.class);
                                     if (dataSnapshot1.hasChild("user_1") && dataSnapshot1.hasChild("user_2") && dataSnapshot1.hasChild("messages")) {
                                         final String getUserOne = dataSnapshot1.child("user_1").getValue(String.class);
-                                        try {
-//                                            if (!MemoryData.profilePictureExists(getmobile, getContext())) {
-                                                firebaseStorage = FirebaseStorage.getInstance();
-                                                storageReference = firebaseStorage.getReference();
-                                                StorageReference imgRef = storageReference.child("ProfilePictures").child(getmobile);
+                                        final String profilePic= snapshot1.child(getmobile).child("profilePic").getValue(String.class);
 
-                                                imgRef.getBytes(5024 * 5024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                    @Override
-                                                    public void onSuccess(byte[] bytes) {
-                                                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                        temp = bitmap;
-                                                        if (bitmap != null)
-                                                            try{
-                                                                MemoryData.saveProfilePicture(bitmap, getmobile, getContext());
-                                                            }catch (Exception e){}
-
-
-
-                                                    }
-                                                }).addOnFailureListener(exception -> {
-                                                });
-//                                            }
-                                        } catch (Exception e) {
-                                        }
+//                                        try {
+////                                            if (!MemoryData.profilePictureExists(getmobile, getContext())) {
+//                                                firebaseStorage = FirebaseStorage.getInstance();
+//                                                storageReference = firebaseStorage.getReference();
+//                                                StorageReference imgRef = storageReference.child("ProfilePictures").child(getmobile);
+//
+//                                                imgRef.getBytes(5024 * 5024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                                                    @Override
+//                                                    public void onSuccess(byte[] bytes) {
+//                                                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                                                        temp = bitmap;
+//                                                        if (bitmap != null)
+//                                                            try{
+//                                                                MemoryData.saveProfilePicture(bitmap, getmobile, getContext());
+//                                                            }catch (Exception e){}
+//
+//
+//
+//                                                    }
+//                                                }).addOnFailureListener(exception -> {
+//                                                });
+////                                            }
+//                                        } catch (Exception e) {
+//                                        }
 
                                         final String getUserTwo = dataSnapshot1.child("user_2").getValue(String.class);
                                         if (getUserOne.equals(mobile) && getUserTwo.equals(getmobile) || getUserOne.equals(getmobile) && getUserTwo.equals(mobile)) {
                                             if (dataSnapshot1.child("messages").getChildrenCount() == 0) {
 //                                            if(retrievedList==null ){
-                                                MessagesList messagesList = new MessagesList(getName, getmobile, "Say Hello..", temp, 0, chatKey, LastNode[0]);
+                                                MessagesList messagesList = new MessagesList(getName, getmobile, "Say Hello..", profilePic, 0, chatKey, LastNode[0]);
                                                 messagesLists.add(messagesList);
                                             } else {
                                                 String savedChatId = "";
@@ -489,12 +515,27 @@ public class BlankFragment extends Fragment {
                                                         savedChatId = getKey;
                                                     }
                                                     ;
-                                                    lastMessage = chatDataSnapshot.child("msg").getValue(String.class);
+//                                                    try{
+                                                        lastMessage = chatDataSnapshot.child("msg").getValue(String.class);
+                                                        if(lastMessage==null || lastMessage.isEmpty()) {
+                                                            try{
+                                                                if(chatDataSnapshot.child("mobile").getValue(String.class).equals(mobile)) lastMessage = "[◉\"] You: shared a photo";
+                                                                else lastMessage ="[◉\"] "+ databaseReference.child(mobile).child("contacts").child(chatDataSnapshot.child("mobile").child("Name").getValue(String.class))+": shared a photo";
+                                                            }catch(Exception e){
+                                                                lastMessage = "image is shared";
+                                                            }
+
+//
+                                                        }
+//                                                    }catch (Exception e){
+//                                                        lastMessage = "image";
+//                                                    }
+
                                                     if (getMessageKey > getLastSeenMessage) {
                                                         unseenMessages++;
                                                     } else unseenMessages = 0;
                                                 }
-                                                MessagesList messagesList = new MessagesList(getName, getmobile, lastMessage, temp, unseenMessages, chatKey, LastNode[0]);
+                                                MessagesList messagesList = new MessagesList(getName, getmobile, lastMessage, profilePic, unseenMessages, chatKey, LastNode[0]);
                                                 int x = 0;
                                                 if (messagesLists.isEmpty())
                                                     messagesLists.add(messagesList);
@@ -522,8 +563,10 @@ public class BlankFragment extends Fragment {
                                 }
 
                                 retrievedList = messagesLists;
+//                                if(MainActivity.firstTime!=null) swipeRefreshLayout.setRefreshing(true);
                             } else information.setVisibility(View.VISIBLE);
 //                            customLottieDialog.dismiss();
+                            swipeRefreshLayout.setRefreshing(false);
 
                         }
 
@@ -644,7 +687,8 @@ public class BlankFragment extends Fragment {
 //                    });
 //                }else Toast.makeText(getContext(),"Enter a Valid user name",Toast.LENGTH_SHORT).show();
 
-                MainActivity.sendRequest(searchUserName,getContext(),warning,dialog);
+                MainActivity.sendRequest(searchUserName.getText().toString(),getContext(),warning,dialog);
+                searchUserName.setText("");
             }
 
         });
@@ -683,10 +727,11 @@ public class BlankFragment extends Fragment {
     DatabaseReference databaseReference1;
     @SuppressLint("Range")
     private void importContacts() {
-        CustomLottieDialog customLottieDialog = new CustomLottieDialog(getContext(), "LO04");
+        CustomLottieDialog customLottieDialog = new CustomLottieDialog(getContext(), R.raw.animation_contacts);
         customLottieDialog.setLottieBackgroundColor("#000000");
         customLottieDialog.setDialogLayoutDimensions(200, 200);
-        customLottieDialog.setLoadingText("Loading...");
+        customLottieDialog.setLoadingText("    ○ ○ ○ ○ ○   ");
+        customLottieDialog.setLoadingTextColor("#FFFFFF");
 
         // Start the background task to import contacts
         new ImportContactsTask(getContext(), customLottieDialog).execute();
@@ -724,27 +769,35 @@ public class BlankFragment extends Fragment {
 
     public void getStatus(View view){
          statusList = new ArrayList<>();
-         List<StatusState> statusState=MainActivity.statusState;
+//         List<StatusState> statusState=MainActivity.statusState;
         long currTime=System.currentTimeMillis();
 
-        recyclerView = view.findViewById(R.id.recyclerView);
+//        recyclerView = view.findViewById(R.id.recyclerView);
 
-        valueEventListener=databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean state=true;
                 statusList.clear();
 //                Log.i("checkingxxx",snapshot.child(mobile).child("Status").child("MyStatus").child("1").getValue(String.class)+"aa");
 
                 for(DataSnapshot snapshot1:snapshot.child(mobile).child("Status").child("MyStatus").getChildren()){
-                    Mystatus=snapshot1.child("statusImage").getValue(String.class);
+
 
 //                    Log.i("testingThis",Mystatus);
                     long time=currTime;
                     try {
                         time=snapshot1.child("statusTime").getValue(Long.class);
-                    }catch (Exception e){};
+                    }catch (Exception e){
+
+                    };
                     long timeDifferenceMillis=currTime-time;
-                    if(timeDifferenceMillis<= TimeUnit.DAYS.toMillis(1)) {
+//                    Mystatus=snapshot1.child("statusImage").getValue(String.class);
+//                    Log.i("mystatus",Mystatus);
+                    if(Mystatus==null) Mystatus=snapshot1.child("statusImage").getValue(String.class);
+                    if(timeDifferenceMillis<= TimeUnit.DAYS.toMillis(1) && Mystatus!=null) {
+//                        if(Mystatus==null) Mystatus=snapshot1.child("statusImage").getValue(String.class);
+                        Log.i("mystatus",Mystatus+"    aaaaa");
                     try{
                         Glide.with(requireContext())
                                 .load(Mystatus)
@@ -764,19 +817,34 @@ public class BlankFragment extends Fragment {
                                     }
                                 })
                                 .into(my_story);
+                        myStatusState.setVisibility(View.VISIBLE);
+                        state=false;
+                        if(snapshot.child(mobile).child("Status").child("MyStatus").child("viewed").getValue(String.class).equals("Yes")) myStatusState.setImageResource(R.drawable.status_circle_grey);
+                        else myStatusState.setImageResource(R.drawable.status_cicrcle);
                     }catch (Exception e){}}
                     else{
+                        state=false;
                         FirebaseStorage storage=FirebaseStorage.getInstance();
                         StorageReference deleter=storage.getReference().child("Status").child(mobile).child(snapshot1.getKey());
                         deleter.delete();
+                        databaseReference.child(mobile).child("Status").child("MyStatus").child(snapshot1.getKey()).removeValue();
+                        myStatusState.setVisibility(View.GONE);
+//                        my_story
                     }
 
 //                    Picasso.get().load(Mystatus).into(my_story);
 
                     break;
+                }if(state) {
+                    Bitmap bitmap;
+                    if(Container.getMyImage()!=null) bitmap=Container.getMyImage();
+                    else bitmap =MemoryData.getProfilePicture(MainActivity.mobile,getContext());
+                    my_story.setImageBitmap(bitmap);
+                    myStatusState.setVisibility(View.GONE);
                 }
 
                 for(DataSnapshot snapshot1:snapshot.child(mobile).child("Status").child("Others").getChildren()){
+                    boolean shouldRemove=true;
                     for(DataSnapshot dataSnapshot:snapshot.child(Objects.requireNonNull(snapshot1.getKey())).child("Status").child("MyStatus").getChildren()){
                         long time=currTime;
                         try{
@@ -784,8 +852,9 @@ public class BlankFragment extends Fragment {
                         }catch (Exception e){};
 
                         long timeDifferenceMillis=currTime-time;
-//                        if(timeDifferenceMillis<= TimeUnit.DAYS.toMillis(1)) {
-                            String imageUrl=dataSnapshot.child("statusImage").getValue(String.class);
+                        String imageUrl=dataSnapshot.child("statusImage").getValue(String.class);
+                        if(timeDifferenceMillis<= TimeUnit.DAYS.toMillis(1) && imageUrl!=null) {
+                            shouldRemove=false;
                             DataSnapshot ref = snapshot.child(mobile).child("contacts").child(snapshot1.getKey());
                             String Name = ref.child("Name").getValue(String.class);
                             String chatId = ref.child("ChatId").getValue(String.class);
@@ -794,8 +863,9 @@ public class BlankFragment extends Fragment {
                             statusList.add(0, new StatusModel(imageUrl, Name, snapshot1.getKey(), chatId,viewed));
 //                        Log.i("checkingxxx",Name);
                             break;
-//                        }
+                        }
                     }
+                    if(shouldRemove) databaseReference.child(mobile).child("Status").child("Others").child(snapshot1.getKey()).removeValue();
 
                 }
                 Container.statusList=statusList;
@@ -849,6 +919,12 @@ public class BlankFragment extends Fragment {
 //        ProgressDialog dialog=new ProgressDialog(this);
 //        dialog.setTitle("File Uploader");
 //        dialog.show();
+        CustomLottieDialog customLottieDialog = new CustomLottieDialog(getContext(), "LO04");
+        customLottieDialog.setLottieBackgroundColor("#000000");
+        customLottieDialog.setDialogLayoutDimensions(500, 500);
+        customLottieDialog.setLoadingText("Loading...");
+        customLottieDialog.show();
+
         DatabaseReference ref=databaseReference.child(mobile).child("Status").child("MyStatus").push();
         String imageId=ref.getKey();
         FirebaseStorage storage=FirebaseStorage.getInstance();
@@ -871,7 +947,7 @@ public class BlankFragment extends Fragment {
                                     ref.child("statusTime").setValue(System.currentTimeMillis());
 //                                    String StatusId=newStatusRef.getKey();
 //                                    newStatusRef.setValue(statusUrl);
-                                    Toast.makeText(getContext(),"Uploading your status.",Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getContext(),"Uploading your status.",Toast.LENGTH_SHORT).show();
                                     for(DataSnapshot dataSnapshot:snapshot.child(mobile).child("contacts").getChildren()){
 //                                        databaseReference.child("Status").child("Others").child(mobile).
                                         databaseReference.child(Objects.requireNonNull(dataSnapshot.getKey())).child("Status").child("Others").child(mobile).child("viewed").setValue("No");
@@ -890,13 +966,15 @@ public class BlankFragment extends Fragment {
 
                         }
                     });
+//                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
+                    customLottieDialog.dismiss();
                 }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            }).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-//                float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
-//                dialog.setMessage("Uploaded :"+(int)percent+" %");
+                public void onFailure(@NonNull Exception e) {
+                    Log.i("failureMessage",e.getMessage());
+                    Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -918,7 +996,7 @@ public class BlankFragment extends Fragment {
         importContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),"Importing contacts",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),"Importing contacts",Toast.LENGTH_SHORT).show();
                 checkAndRequestContactsPermission();
                 dialog.dismiss();
             }
@@ -931,11 +1009,17 @@ public class BlankFragment extends Fragment {
     public void onStart() {
         super.onStart();
         getStatus(view1);
+//        databaseReference.child("Users").child(mobile).child("State").setValue(1);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        databaseReference.removeEventListener(valueEventListener);
+//        databaseReference.removeEventListener(valueEventListener);
+//        databaseReference.child("Users").child(mobile).child("State").setValue(0);
     }
+
+
+
+
 }

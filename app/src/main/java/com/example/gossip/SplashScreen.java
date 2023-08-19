@@ -13,6 +13,7 @@ import com.example.gossip.chat.Chat;
 
 public class SplashScreen extends AppCompatActivity {
 
+    private int time=1500;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,22 +22,33 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void run() {
 //                 Start the main activity or the next activity
-                if(getIntent().getExtras()!=null) {
+                if(getIntent().getExtras()!=null && getIntent().getExtras().getString("Mobile")!=null && getIntent().getExtras().getString("ChatKey")!=null ) {
                     Log.i("checking","yes");
+                    Container.redirect=true;
                     //from notification
                     String userMobile = getIntent().getExtras().getString("Mobile");
                     String Name = getIntent().getExtras().getString("Name");
                     String ChatKey = getIntent().getExtras().getString("ChatKey");
-                    Intent intent = new Intent(getApplicationContext(), Chat.class);
-                    intent.putExtra("mobile", userMobile);
-                    intent.putExtra("name", Name);
-                    intent.putExtra("chat_key", ChatKey);
-                    startActivity(intent);
+                    if(MainActivity.mobile==null) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("mobile", userMobile);
+                        intent.putExtra("name", Name);
+                        intent.putExtra("chat_key", ChatKey);
+                        getIntent().replaceExtras(new Bundle());
+                        getIntent().setAction("");
+                        startActivity(intent);
+                    }else{
+                        Intent intent = new Intent(getApplicationContext(), Chat.class);
+                        intent.putExtra("mobile", userMobile);
+                        intent.putExtra("name", Name);
+                        intent.putExtra("chat_key", ChatKey);
+                        getIntent().replaceExtras(new Bundle());
+                        getIntent().setAction("");
+                        startActivity(intent);
+                    }
                 }else{
                     if (!MemoryData.getData(getApplicationContext()).isEmpty()) {
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                        BlankFragment blankFragment=new BlankFragment();
-                        Bundle bundle = new Bundle();
                         startActivity(i);
                         Animatoo.INSTANCE.animateZoom(SplashScreen.this);
                         finish();

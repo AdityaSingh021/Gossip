@@ -84,11 +84,12 @@ public class OOtpVerification extends AppCompatActivity {
         editPhoneNumber=findViewById(R.id.editPhone);
         textView1=findViewById(R.id.textView1);
         textView1.setText("sent on +91"+edtPhone);
-        startTimer();
+//        startTimer();
         timerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(resend) sendVerificationCode("+91"+edtPhone);
+                Toast.makeText(getApplicationContext(),"Resending OTP",Toast.LENGTH_SHORT).show();
             }
         });
         sendVerificationCode("+91"+edtPhone);
@@ -96,6 +97,7 @@ public class OOtpVerification extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+                finish();
             }
         });
         verifyOTPBtn.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +126,7 @@ public class OOtpVerification extends AppCompatActivity {
     private void sendVerificationCode(String number) {
         // this method is used for getting
         // OTP on user phone number.
+        startTimer();
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
                         .setPhoneNumber(number)            // Phone number to verify
@@ -172,7 +175,7 @@ public class OOtpVerification extends AppCompatActivity {
     private void signInWithCredential(PhoneAuthCredential credential) {
         // inside this method we are checking if
         // the code entered is correct or not.
-        Toast.makeText(getApplicationContext(),"Signing In",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"Signing In please wait",Toast.LENGTH_SHORT).show();
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -224,6 +227,7 @@ public class OOtpVerification extends AppCompatActivity {
                                         String UserId="User@"+AuthenticationId.substring(len-5,len);
                                         Container.setMyName(UserId);
                                         databaseReference.child("Users").child(edtPhone).child("Name").setValue(UserId);
+                                        databaseReference.child("Users").child(edtPhone).child("State").setValue(0);
                                         myEdit.putString("name",UserId);
                                         myEdit.apply();
                                     }
@@ -251,6 +255,7 @@ public class OOtpVerification extends AppCompatActivity {
 //                            databaseReference.child("Users").child(edtPhone).child()
                             Intent i = new Intent(getApplicationContext(), MainActivity.class);
                             i.putExtra("mobile",edtPhone.toString());
+                            i.putExtra("FirstTime","Yes");
 //                            i.putExtra("name","Aditya");
                             startActivity(i);
                             finish();
@@ -262,64 +267,65 @@ public class OOtpVerification extends AppCompatActivity {
                     }
                 });
     }
-    public void uploadtofirebase(){
-//        ProgressDialog dialog=new ProgressDialog(this);
-//        dialog.setTitle("File Uploader");
-//        dialog.show();
-        FirebaseStorage storage=FirebaseStorage.getInstance();
-        StorageReference uploader=storage.getReference().child(String.valueOf(edtPhone));
-        if(filepath!=null){
-            uploader.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                if (!Login.this.isFinishing() && dialog != null) {
-//                dialog.dismiss();
-//                }
-                    uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            s=edtPhone;
-//                            n=Name.getText().toString();
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            if(!snapshot.child("Users").hasChild(s)){
-//                                Log.i("justCheck2","yess");
-                                    databaseReference.child("Users").child(s).child("Name").setValue(n);
-                                    databaseReference.child(s).child("Status").setValue(0);
-//                                if(profilePicLink==null) {
-//                                    databaseReference.child(s).child("profilePic").setValue("");
-//                                    Toast.makeText(getApplicationContext(),"Empty",Toast.LENGTH_SHORT).show();
+//    public void uploadtofirebase(){
+////        ProgressDialog dialog=new ProgressDialog(this);
+////        dialog.setTitle("File Uploader");
+////        dialog.show();
+//        FirebaseStorage storage=FirebaseStorage.getInstance();
+//        StorageReference uploader=storage.getReference().child(String.valueOf(edtPhone));
+//        if(filepath!=null){
+//            uploader.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+////                if (!Login.this.isFinishing() && dialog != null) {
+////                dialog.dismiss();
+////                }
+//                    uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            s=edtPhone;
+////                            n=Name.getText().toString();
+//                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+////                            if(!snapshot.child("Users").hasChild(s)){
+////                                Log.i("justCheck2","yess");
+//                                    databaseReference.child("Users").child(s).child("Name").setValue(n);
+//                                    databaseReference.child(s).child("Status").setValue(0);
+////                                if(profilePicLink==null) {
+////                                    databaseReference.child(s).child("profilePic").setValue("");
+////                                    Toast.makeText(getApplicationContext(),"Empty",Toast.LENGTH_SHORT).show();
+////                                }
+//                                    databaseReference.child(s).child("profilePic").setValue(uri.toString());
+////                                    Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
+////                            }
 //                                }
-                                    databaseReference.child(s).child("profilePic").setValue(uri.toString());
-//                                    Toast.makeText(getApplicationContext(),"Registering...",Toast.LENGTH_SHORT).show();
-//                            }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
-                                }
-                            });
-//                        profilePicLink=uri.toString();
-//                        Toast.makeText(getApplicationContext(),profilePicLink,Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-//                float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
-//                dialog.setMessage("Uploaded :"+(int)percent+" %");
-                }
-            });
-        }
-    }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError error) {
+//                                    Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+////                        profilePicLink=uri.toString();
+////                        Toast.makeText(getApplicationContext(),profilePicLink,Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    });
+//                }
+//            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+////                float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
+////                dialog.setMessage("Uploaded :"+(int)percent+" %");
+//                }
+//            });
+//        }
+//    }
 
     //------------- Resend Otp Timer ------------------------------->
 
     private void startTimer() {
+        timerTextView.setTextColor(Color.WHITE);
         // Initialize the countdown timer
         CountDownTimer countDownTimer = new CountDownTimer(20000, 1000) {
             @Override
@@ -333,7 +339,7 @@ public class OOtpVerification extends AppCompatActivity {
             public void onFinish() {
                 // Timer finished, enable the "Resend OTP" button
                 timerTextView.setText("Resend OTP"); // Clear the timer text
-                timerTextView.setTextColor(Color.parseColor("#00547e"));
+                timerTextView.setTextColor(Color.parseColor("#B2F3E9"));
                 resend=true;
             }
         };

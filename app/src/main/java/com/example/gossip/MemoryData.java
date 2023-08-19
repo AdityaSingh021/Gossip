@@ -173,13 +173,13 @@ public static String getData (Context context) {
         return data;
     }
 
-    public static void downloadImageAndSave(String imageRef, String number, Context context) {
+    public static void downloadImageAndSave(String imageRef, String chatId, Context context) {
 //        Toast.makeText(context.getApplicationContext(), imageRef,Toast.LENGTH_SHORT).show();
         // Get a reference to the Firebase Storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         // Create a StorageReference pointing to the image file
-        StorageReference storageRef = storage.getReference().child(imageRef);
+        StorageReference storageRef = storage.getReference().child("chatImages").child(chatId);
 
 //        Toast.makeText(context.getApplicationContext(), storageRef.toString(),Toast.LENGTH_SHORT).show();
 
@@ -205,16 +205,17 @@ public static String getData (Context context) {
                 Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
 
                 // Save the bitmap as a profile picture using saveProfilePicture() function
-                saveProfilePicture(bitmap, number, context);
+                saveProfilePicture(bitmap, chatId, context);
 
                 // Delete the temporary file
                 localFile.delete();
-                Toast.makeText(context.getApplicationContext(), "Profile picture saved successfully",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context.getApplicationContext(), "Profile picture saved successfully",Toast.LENGTH_SHORT).show();
 //                System.out.println("Profile picture saved successfully");
             }).addOnFailureListener(exception -> {
                 // Handle any errors that occurred during the download
 //                System.out.println("Failed to download image: " + exception.getMessage());
-                Toast.makeText(context.getApplicationContext(), exception.getMessage(),Toast.LENGTH_SHORT).show();
+                Log.i("myError",exception.getMessage()+"      "+chatId);
+//                Toast.makeText(context.getApplicationContext(), exception.getMessage(),Toast.LENGTH_SHORT).show();
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -356,5 +357,42 @@ public static String getData (Context context) {
             folder.delete();
         }
     }
+
+    public static void saveImage(Bitmap bitmap, String chatId, Context context) {
+        createProfilePicturesFolder(context);
+
+        try {
+            String fileName = chatId + ".jpeg";
+            File file = new File(context.getFilesDir() + "/ProfilePicturesFolder", fileName);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+//            Toast.makeText(context.getApplicationContext(),bitmap.toString(),Toast.LENGTH_SHORT).show();
+            fileOutputStream.close();
+
+            // Print the saved file path for reference
+//            System.out.println("Profile picture saved: " + file.getAbsolutePath());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void deleteProfilePicture(String Number, Context context) {
+        String fileName = Number + ".jpeg";
+        File file = new File(context.getFilesDir() + "/ProfilePicturesFolder", fileName);
+
+        if (file.exists()) {
+            if (file.delete()) {
+                Log.i("DeleteImage", "Profile picture deleted: " + fileName);
+            } else {
+                Log.e("DeleteImage", "Failed to delete profile picture: " + fileName);
+            }
+        } else {
+            Log.i("DeleteImage", "Profile picture does not exist: " + fileName);
+        }
+    }
+
+
 }
 

@@ -11,8 +11,7 @@
     <ScrollView
         android:scrollbarSize="0dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp">
+        android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,7 +60,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="35dp"
                 android:layout_marginRight="40dp"
-                android:src="@drawable/man_avatar" />
+                android:src="@drawable/default_user" />
 
         </RelativeLayout>
 
@@ -96,6 +95,7 @@
                     android:textColor="#999999"/>
 
                 <EditText
+                    android:textColor="@color/white"
                     android:layout_marginEnd="10dp"
                     android:ellipsize="end"
                     android:id="@+id/type_tags"
@@ -137,6 +137,7 @@
             android:fontFamily="@font/bitter"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20sp"
+            android:textSize="16dp"
             android:gravity="center"
             android:textColor="#90FFFFFF" />
 
@@ -188,7 +189,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/open_sans"
-            android:text="Popular HashTags"
+            android:text="Trending HashTags"
             android:textColor="@color/white"
             android:textSize="16dp"
             android:textStyle="bold" />
@@ -238,7 +239,7 @@
                     android:background="@drawable/hashtag_bg"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
-                    android:text="#PrimeMinisterOfIndia"
+                    android:text="#RonaldoVsMessi"
                     android:textColor="@color/white"
                     android:textSize="15dp" />
 
@@ -264,7 +265,7 @@
                     android:background="@drawable/hashtag_bg"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
-                    android:text="#JustinBieber"
+                    android:text="#BigBoss"
                     android:textColor="@color/white"
                     android:textSize="15dp" />
 
@@ -277,7 +278,7 @@
                     android:background="@drawable/hashtag_bg"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
-                    android:text="#RoadiesS4"
+                    android:text="#ElvishYadav"
                     android:textColor="@color/white"
                     android:textSize="15dp" />
 
@@ -290,7 +291,7 @@
                     android:background="@drawable/hashtag_bg"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
-                    android:text="#SplitsVillaS2"
+                    android:text="#IndependenceDay"
                     android:textColor="@color/white"
                     android:textSize="15dp" />
 
@@ -303,7 +304,7 @@
                     android:background="@drawable/hashtag_bg"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
-                    android:text="#BollywoodShows"
+                    android:text="#NarendraModi"
                     android:textColor="@color/white"
                     android:textSize="15dp" />
 

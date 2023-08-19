@@ -39,7 +39,7 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="15dp"
+                    android:textSize="17dp"
                     android:maxLines="1"
                     android:text="Fullname"
                     android:textStyle="bold"></TextView>
@@ -49,8 +49,7 @@
                     android:id="@+id/lastMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14dp"
-                    android:maxLength="26"
+                    android:textSize="16dp"
                     android:maxLines="1"
                     android:text="This is last message"></TextView>
 

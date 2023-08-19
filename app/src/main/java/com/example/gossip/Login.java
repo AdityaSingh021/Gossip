@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +15,13 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,6 +59,7 @@ import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 public class Login extends AppCompatActivity {
+    CheckBox checkBox;
     private FirebaseAuth mAuth;
     private String AuthenticationId;
     private ImageView take_image;
@@ -64,6 +68,7 @@ public class Login extends AppCompatActivity {
     private TextView generateOTPBtn;
     private EditText Name;
     private EditText edtPhone;
+    private TextView termsAndConditions;
     private String s;
     private String n;
     Uri filepath;
@@ -108,6 +113,18 @@ public class Login extends AppCompatActivity {
 //        verifyOTPBtn.setVisibility(View.INVISIBLE);
 //        edtOTP.setVisibility(View.INVISIBLE);
         mAuth=FirebaseAuth.getInstance();
+        checkBox=findViewById(R.id.checkBox);
+        termsAndConditions=findViewById(R.id.TermsAndConditions);
+        boolean areNotificationsEnabled = areNotificationsEnabled(Login.this);
+        if (!areNotificationsEnabled) openNotificationSettings();
+            // Notifications are enabled
+        termsAndConditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(getApplicationContext(),ContactChats.class);
+                startActivity(i);
+            }
+        });
 //        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" +getPackageName()));
 //        getApplicationContext().startActivity(intent);
 //        take_image=findViewById(R.id.profile_image);
@@ -141,16 +158,17 @@ public class Login extends AppCompatActivity {
         generateOTPBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(checkBox.isChecked()) {
                     if (TextUtils.isEmpty(edtPhone.getText().toString())) {
                         Toast.makeText(getApplicationContext(), "Please Enter a valid Phone Number", Toast.LENGTH_SHORT).show();
                     } else {
                         String phone = "+91" + edtPhone.getText().toString();
 //                        sendVerificationCode(phone);
-                        Intent i=new Intent(getApplicationContext(),OOtpVerification.class);
-                        i.putExtra("Mobile",edtPhone.getText().toString());
+                        Intent i = new Intent(getApplicationContext(), OOtpVerification.class);
+                        i.putExtra("Mobile", edtPhone.getText().toString());
                         startActivity(i);
                     }
+                }else Toast.makeText(getApplicationContext(),"Select CheckBox",Toast.LENGTH_SHORT).show();
 
 
 
@@ -273,5 +291,25 @@ public class Login extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    private boolean areNotificationsEnabled(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Check if notifications are enabled for the app
+        if (notificationManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                return notificationManager.areNotificationsEnabled();
+            }
+        }
+        return false;
+    }
+    private void openNotificationSettings() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, getApplicationContext().getPackageName());
+
+        if (intent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }

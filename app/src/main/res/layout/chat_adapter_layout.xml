@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <RelativeLayout
@@ -12,11 +13,27 @@
 
         <LinearLayout
             android:id="@+id/oppoLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="100dp"
+            android:layout_marginEnd="30dp"
             android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
+
+                app:cardBackgroundColor="#303030"
+                android:layout_marginStart="10sp">
+
+                <ImageView
+                    android:adjustViewBounds="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ImageByOpp"/>
+
+            </androidx.cardview.widget.CardView>
 
 
             <TextView
@@ -27,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/recieve_msg"
                 android:paddingVertical="5dp"
+                android:textSize="16dp"
                 android:text="This is opponent message"
                 android:textColor="@color/white" />
 
@@ -38,24 +56,41 @@
                 android:layout_marginTop="5dp"
                 android:text="25-01-2023 10:30 PM"
                 android:textColor="#FCF5D2"
-                android:textSize="8sp" />
+                android:textSize="10dp" />
 
 
         </LinearLayout>
 
 
         <LinearLayout
+            android:layout_marginStart="30dp"
             android:id="@+id/MyLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:paddingEnd="10dp"
             android:paddingBottom="10dp"
             android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
+
+                app:cardBackgroundColor="#303030"
+                android:layout_marginStart="10sp">
+
+                <ImageView
+                    android:adjustViewBounds="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageByMe"/>
+
+            </androidx.cardview.widget.CardView>
 
 
             <TextView
-                android:layout_marginStart="20sp"
+                android:textSize="16dp"
+
                 android:fontFamily="@font/open_sans"
                 android:id="@+id/myMessage"
                 android:layout_width="wrap_content"
@@ -76,7 +111,7 @@
                 android:paddingStart="20dp"
                 android:text="25-01-2023 10:30 PM"
                 android:textColor="#DFF1FF"
-                android:textSize="8sp" />
+                android:textSize="10dp" />
 
 
         </LinearLayout>

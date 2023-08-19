@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="BottomNavigationView" parent="Widget.Design.BottomNavigationView">
         <!-- Add these lines to customize or remove the ripple effect -->
         <item name="android:clickable">true</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:background">#303030</item>
+    </style>
+    <style name="CustomProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/camera_icon</item>
     </style>
 </resources>

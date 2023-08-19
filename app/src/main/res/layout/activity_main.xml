@@ -12,22 +12,22 @@
         android:layout_above="@+id/BottomNav"/>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="0dp"
         android:background="@drawable/bottom_nav_shade"
         android:layout_alignParentBottom="true"/>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:itemIconSize="25dp"
-
+        android:layout_height="wrap_content"
+        android:paddingVertical="5dp"
+        app:itemIconSize="20dp"
         app:itemBackground="@color/black"
         style="@style/BottomNavigationView"
         android:id="@+id/BottomNav"
         app:itemIconTint="@color/bottom_nav_icon_color"
         app:itemTextColor="@color/bottom_nav_icon_color"
         app:menu="@menu/bottom_nav_menu"
-        android:background="@android:color/transparent">
+        android:background="@color/black">
 
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

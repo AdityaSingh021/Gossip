@@ -127,6 +127,15 @@
         android:layout_alignParentBottom="true"
         android:paddingVertical="10dp"
         android:orientation="horizontal">
+        <ImageView
+            android:elevation="1dp"
+            android:id="@+id/camera"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/camera_icon"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="90dp"/>
 
         <EditText
             android:id="@+id/message"
@@ -137,13 +146,13 @@
             android:layout_marginEnd="70dp"
             android:background="@drawable/type_message_bg"
             android:fontFamily="@font/open_sans"
-
             android:hint="Message"
-            android:padding="10dp"
+            android:paddingEnd="50dp"
+            android:paddingVertical="10dp"
             android:paddingStart="20dp"
             android:textColor="@color/white"
             android:textColorHint="#70FFFFFF"
-            android:textSize="14sp" />
+            android:textSize="16dp" />
 
         <RelativeLayout
             android:layout_marginTop="5dp"
