@@ -519,8 +519,11 @@ public class BlankFragment extends Fragment {
                                                         lastMessage = chatDataSnapshot.child("msg").getValue(String.class);
                                                         if(lastMessage==null || lastMessage.isEmpty()) {
                                                             try{
-                                                                if(chatDataSnapshot.child("mobile").getValue(String.class).equals(mobile)) lastMessage = "[◉\"] You: shared a photo";
-                                                                else lastMessage ="[◉\"] "+ databaseReference.child(mobile).child("contacts").child(chatDataSnapshot.child("mobile").child("Name").getValue(String.class))+": shared a photo";
+                                                                if(chatDataSnapshot.child("mobile").getValue(String.class).equals(mobile)) lastMessage = "\uD83D\uDCF7 You: shared a photo";
+                                                                else {
+                                                                    String oppoMobile=chatDataSnapshot.child("mobile").getValue(String.class);
+                                                                    lastMessage = "\uD83D\uDCF7 " + snapshot1.child(mobile).child("contacts").child(oppoMobile).child("Name").getValue(String.class) + ": shared a photo";
+                                                                }
                                                             }catch(Exception e){
                                                                 lastMessage = "image is shared";
                                                             }
