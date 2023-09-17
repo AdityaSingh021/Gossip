@@ -265,7 +265,6 @@ public class BlankFragment extends Fragment {
         myStatusState=view.findViewById(R.id.MyStatusState);
         shimmerFrameLayout.startShimmer();
 
-
         SharedPreferences sharedPreferences = context.getSharedPreferences("MyAuthenticationId",MODE_PRIVATE);
         myName=sharedPreferences.getString("name","Unknown");
 //        progressBar.setVisibility(View.VISIBLE);
@@ -300,7 +299,9 @@ public class BlankFragment extends Fragment {
 //        });
         information=view.findViewById(R.id.information);
         information.setVisibility(View.INVISIBLE);
-
+//        LoadingAnimation obj=new LoadingAnimation(context);
+//        obj.Load();
+//        obj.show();
 
         swipeRefreshLayout = view.findViewById(R.id.myFragment);
         swipeRefreshLayout.setRefreshing(true);
@@ -804,6 +805,7 @@ public class BlankFragment extends Fragment {
                     try{
                         Glide.with(requireContext())
                                 .load(Mystatus)
+                                .placeholder(R.drawable.loading_image)
                                 .listener(new RequestListener<Drawable>() {
                                     @Override
                                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -922,11 +924,15 @@ public class BlankFragment extends Fragment {
 //        ProgressDialog dialog=new ProgressDialog(this);
 //        dialog.setTitle("File Uploader");
 //        dialog.show();
-        CustomLottieDialog customLottieDialog = new CustomLottieDialog(getContext(), "LO04");
-        customLottieDialog.setLottieBackgroundColor("#000000");
-        customLottieDialog.setDialogLayoutDimensions(500, 500);
-        customLottieDialog.setLoadingText("Loading...");
-        customLottieDialog.show();
+//        CustomLottieDialog customLottieDialog = new CustomLottieDialog(getContext(), R.raw.animation_loading);
+//        customLottieDialog.setLottieBackgroundColor("#000000");
+//        customLottieDialog.setDialogLayoutDimensions(100, 120);
+//        customLottieDialog.setLoadingText("   .....   ");
+//        customLottieDialog.setLoadingTextColor("#FFFFFF");
+//        customLottieDialog.show();
+        LoadingAnimation obj=new LoadingAnimation(context);
+        obj.Load();
+        obj.dialog.show();
 
         DatabaseReference ref=databaseReference.child(mobile).child("Status").child("MyStatus").push();
         String imageId=ref.getKey();
@@ -971,7 +977,8 @@ public class BlankFragment extends Fragment {
                     });
 //                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
-                    customLottieDialog.dismiss();
+//                    customLottieDialog.dismiss();
+                    obj.dismiss();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

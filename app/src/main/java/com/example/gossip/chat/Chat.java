@@ -42,6 +42,7 @@ import com.example.gossip.BlankFragment;
 import com.example.gossip.ContactChats;
 import com.example.gossip.Container;
 import com.example.gossip.HomeActivity;
+import com.example.gossip.LoadingAnimation;
 import com.example.gossip.MainActivity;
 import com.example.gossip.MemoryData;
 import com.example.gossip.R;
@@ -723,11 +724,14 @@ public class Chat extends AppCompatActivity {
 //        ProgressDialog dialog=new ProgressDialog(this);
 //        dialog.setTitle("File Uploader");
 //        dialog.show();
-        Log.i("steps","2");
-        CustomLottieDialog customLottieDialog = new CustomLottieDialog(Chat.this, R.raw.animation_loading);
-        customLottieDialog.setLottieBackgroundColor("#000000");
-        customLottieDialog.setDialogLayoutDimensions(100, 100);
-        customLottieDialog.show();
+//        Log.i("steps","2");
+//        CustomLottieDialog customLottieDialog = new CustomLottieDialog(Chat.this, R.raw.animation_loading);
+//        customLottieDialog.setLottieBackgroundColor("#000000");
+//        customLottieDialog.setDialogLayoutDimensions(100, 100);
+//        customLottieDialog.show();
+        LoadingAnimation obj=new LoadingAnimation(Chat.this);
+        obj.Load();
+        obj.show();
 
         DatabaseReference ref=databaseReference.child(mobile).child("chat").child(chatKey).child("messages").push();
         String imageId=ref.getKey();
@@ -790,7 +794,7 @@ public class Chat extends AppCompatActivity {
                     Log.i("steps","5");
 //                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getApplicationContext(),"Image uploaded",Toast.LENGTH_SHORT).show();
-                    customLottieDialog.dismiss();
+                    obj.dismiss();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

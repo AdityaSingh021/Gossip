@@ -61,6 +61,7 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusView
         // Use Picasso or Glide to load the image into the ImageView
         Glide.with(context)
                 .load(status.getImageUrl())
+                .placeholder(R.drawable.loading_image)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
